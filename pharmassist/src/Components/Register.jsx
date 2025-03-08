@@ -64,8 +64,8 @@ function Register() {
   };
 
   return (
-    <div className="register-page">
-      <form onSubmit={handleRegister} className="register-form">
+    <div className="form-page">
+      <form onSubmit={handleRegister} className="form">
         <h2>Register</h2>
         <TextField
           label="Email"
