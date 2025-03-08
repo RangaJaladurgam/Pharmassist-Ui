@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+
 import Button from "@mui/material/Button";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; 
@@ -10,6 +8,7 @@ import Image2 from "../assets/pexels-pavel-danilyuk-5998512.jpg";
 import Image3 from "../assets/pexels-pixabay-40568.jpg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import NavBar from "./NavBar";
 
 export default function Welcome() {
   const [pharmacies] = useState([
@@ -56,21 +55,6 @@ export default function Welcome() {
 
   return (
     <>
-      {/* Navigation Bar */}
-      <AppBar position="static" style={{ backgroundColor: "#3f51b5" }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Pharmassist
-          </Typography>
-          <a href="/register" style={{ textDecoration: "none", marginRight: "10px" }}>
-            <Button variant="outlined" style={{ color: "#fff", borderColor: "#fff" }}>Register</Button>
-          </a>
-          <a href="/login" style={{ textDecoration: "none" }}>
-            <Button variant="outlined" style={{ color: "#fff", borderColor: "#fff" }}>Login</Button>
-          </a>
-        </Toolbar>
-      </AppBar>
-
       {/* Image Carousel */}
       <div style={{ padding: "2rem", textAlign: "center" }}>
         <Carousel showThumbs={false} autoPlay infiniteLoop interval={3000} showStatus={false} className="banner">
