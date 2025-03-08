@@ -3,6 +3,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
 function NavBar() {
   return (
@@ -13,25 +14,23 @@ function NavBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Pharmassist
           </Typography>
-          <a
-            href="/register"
-            style={{ textDecoration: "none", marginRight: "10px" }}
-          >
+          <Link to="/register" style={{ textDecoration: "none" }}>
             <Button
-              variant="outlined"
-              style={{ color: "#fff", borderColor: "#fff" }}
+              variant="contained"
+              sx={{ mx: 1, backgroundColor: "white", color: "#4792e6" }}
             >
               Register
             </Button>
-          </a>
-          <a href="/login" style={{ textDecoration: "none" }}>
+          </Link>
+
+          <Link to="/login" style={{ textDecoration: "none" }}>
             <Button
-              variant="outlined"
-              style={{ color: "#fff", borderColor: "#fff" }}
+              variant="contained"
+              sx={{ backgroundColor: "white", color: "#4792e6" }}
             >
               Login
             </Button>
-          </a>
+          </Link>
         </Toolbar>
       </AppBar>
     </>

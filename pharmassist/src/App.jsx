@@ -3,6 +3,7 @@ import Register from "./Components/Register";
 import Welcome from "./Components/Welcome";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./Components/NavBar";
+import Login from "./Components/Login";
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
         <Routes>
           <Route>
             <Route path="/" element={<Welcome />} />
-            <Route path="/register" element={<Register/>}/>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
           </Route>
         </Routes>
       </div>
@@ -20,12 +22,14 @@ function App() {
 }
 
 const AppWrapper = () => (
-  <Router>
-    <NavBar />
-    <div className="container">
-      <App />
-    </div>
-  </Router>
+  <>
+    <Router>
+      <NavBar />
+      <div className="container">
+        <App />
+      </div>
+    </Router>
+  </>
 );
 
 export default AppWrapper;
