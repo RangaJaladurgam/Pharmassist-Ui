@@ -14,6 +14,7 @@ import Dashboard from "./Components/Dashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import PharmacyProfile from "./Components/PharmacyProfile";
 import DashMenu from "./Components/DashMenu";
+import FloatingForm from "./Components/FloatingForm ";
 
 function App({ isLoggedIn, setIsLoggedIn }) {
   return (
@@ -32,7 +33,8 @@ function App({ isLoggedIn, setIsLoggedIn }) {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="//show-pharmacy" element={<PharmacyProfile />} />
+          <Route path="/show-pharmacy" element={<PharmacyProfile />} />
+          <Route path="/link-pharmacy" element={<FloatingForm />} />
         </Route>
 
         {/* Redirect unknown routes to login */}

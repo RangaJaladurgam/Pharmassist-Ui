@@ -3,7 +3,7 @@ import { Card, CardContent, Typography, Container, Box } from "@mui/material";
 function PharmacyProfile() {
   return (
     <div>
-      <div>Pharmacy Profile</div>
+  
       <Container maxWidth="sm">
       <Card sx={{ mt: 4, p: 2, boxShadow: 3, borderRadius: 2 }}>
         <CardContent>
