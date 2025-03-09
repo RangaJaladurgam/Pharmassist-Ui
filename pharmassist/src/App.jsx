@@ -1,25 +1,40 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import NavBar from "./Components/NavBar";
 import Register from "./Components/Register";
 import Welcome from "./Components/Welcome";
 import Login from "./Components/Login";
 import Dashboard from "./Components/Dashboard";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import PharmacyProfile from "./Components/PharmacyProfile";
+import DashMenu from "./Components/DashMenu";
+import FloatingForm from "./Components/FloatingForm ";
 
 function App({ isLoggedIn, setIsLoggedIn }) {
   return (
     <>
+      {/* DashMenu only if logged in */}
+      {isLoggedIn && <DashMenu />}
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Welcome />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route
+          path="/login"
+          element={<Login setIsLoggedIn={setIsLoggedIn} />}
+        />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/show-pharmacy" element={<PharmacyProfile />} />
+          <Route path="/link-pharmacy" element={<FloatingForm />} />
         </Route>
 
         {/* Redirect unknown routes to login */}

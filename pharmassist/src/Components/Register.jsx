@@ -3,8 +3,10 @@ import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import "./Util.css";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -49,6 +51,7 @@ function Register() {
 
       console.log("✅ Registration Successful", response);
       alert("✅ Registration Successful!");
+      navigate("/auth/login");
       
       // Reset form after successful registration
       setEmail("");
