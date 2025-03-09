@@ -38,6 +38,15 @@ function DashMenu() {
         response.data.data.pharmacyResponse == null
           ? setCheckPharmacy(true)
           : setCheckPharmacy(false);
+
+        // storing useful data into local storage untill logout.
+        localStorage.setItem("adminId",response.data.data.adminId); 
+        localStorage.setItem("adminEmail",response.data.data.ema); 
+        localStorage.setItem("pharmacyId",response.data.data.pharmacyResponse.pharmacyId);
+        localStorage.setItem("pharmacyName",response.data.data.pharmacyResponse.name);
+        localStorage.setItem("gstNumber",response.data.data.pharmacyResponse.gstNo);
+        localStorage.setItem("licenseNo",response.data.data.pharmacyResponse.licenseNo);
+
       } catch (error) {
         console.error(
           "Error fetching profile:",
@@ -62,6 +71,7 @@ function DashMenu() {
             key={item}
             onClick={() => {
               if (item === "Link Pharmacy") navigate("/");
+              if(item === "Show Pharmacy") navigate("/show-pharmacy");
             }}
           >
             <Button color={item!=="Link Pharmacy" ? "primary" : "error"}>{item}</Button>

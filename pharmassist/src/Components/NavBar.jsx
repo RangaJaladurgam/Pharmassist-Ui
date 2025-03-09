@@ -36,6 +36,12 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Remove token
+    localStorage.removeItem("adminId"); // Remove AdminId
+    localStorage.removeItem("adminEmail"); // Remove Email
+    localStorage.removeItem("pharmacyId"); // Remove pharmacyId
+    localStorage.removeItem("pharmacyName"); // Remove pharmacyName
+    localStorage.removeItem("gstNumber"); // Remove gstNumber
+    localStorage.removeItem("licenseNo"); // Remove licenseNo
     setIsLoggedIn(false); // Update state
     navigate("/login"); // Redirect to login page
   };
