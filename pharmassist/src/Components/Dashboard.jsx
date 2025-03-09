@@ -8,7 +8,7 @@ function Dashboard() {
 
   return (
     <>
-      <DashMenu />
+      
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
           Welcome to Your Dashboard
