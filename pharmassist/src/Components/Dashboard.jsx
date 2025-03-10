@@ -92,7 +92,7 @@ function Dashboard() {
     <div style={{ padding: "1rem 4rem" }} className="dashboard-container">
       <div className="dashboard-left-container">
         <div className="left-inner">
-          <h2>Cart</h2>
+          <p>Cart</p>
           <table border="1" style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
             <thead>
               <tr>
@@ -108,17 +108,16 @@ function Dashboard() {
               {cartList.map((medicine) => (
                 <tr key={medicine.medicineId}>
                   <td style={{ textAlign: "center" }}>{medicine.manufacturer}</td>
-                  <td style={{ textAlign: "center" }}>{medicine.name} {medicine.dosageInMg}mg</td>
+                  <td style={{ textAlign: "center" }}>{medicine.name} {medicine.dosageInMg/10}mg</td>
                   <td style={{ textAlign: "center" }}>₹{medicine.price}</td>
                   <td style={{ textAlign: "center" }}>
-                    <TextField
-                      type="number"
+                    <input type="number"
                       value={medicine.quantity}
                       onChange={(e) => handleQuantityChange(medicine.medicineId, parseInt(e.target.value, 10) || 1)}
-                      inputProps={{ min: 1, max: medicine.stockQuantity }}
+                      slotProps={{ min: 1, max: medicine.stockQuantity }}
                       size="small"
-                      style={{ width: "4rem"}}
-                    />
+                      style={{ width: "4rem",height:"1rem",border:"none",fontSize:"11px",textAlign:"center"}}/>
+              
                   </td>
                   <td style={{ textAlign: "center" }}>₹{medicine.price * medicine.quantity}</td>
                   <td style={{ textAlign: "center" }}>
@@ -141,22 +140,25 @@ function Dashboard() {
               )}
             </tbody>
           </table>
-          <footer  style={{backgroundColor:"red",position:"fixed"}}>
-          ₹{totalCartValue}
-          </footer>
+
         </div>
+        <div style={{display:"flex",gap:"0.5rem"}}>
         {cartList.length > 0 && (
             <Button variant="contained" color="primary" style={{ marginTop: "10px" }}>
               Checkout
             </Button>
           )}
-          
+          <Button variant="outlined" color="secondary" style={{ marginTop: "10px" }}>
+            ₹ {totalCartValue}
+            </Button>
+        </div>
+        
       </div>
 
       <div className="dashboard-right-container">
         <div className="right-inner">
           <input
-            style={{ padding: "0.2rem 0.5rem", width: "70%" }}
+            style={{ padding: "0.2rem 0.5rem", width: "70%",border:"1px dashed blue" }}
             type="text"
             placeholder="Search Medicine..."
             value={searchTerm}
@@ -174,9 +176,10 @@ function Dashboard() {
             </thead>
             <tbody>
               {filteredMedicines.map((medicine) => (
-                <tr key={medicine.medicineId}>
+                <tr key={medicine.medicineId}
+                >
                   <td>{medicine.manufacturer}</td>
-                  <td>{medicine.name} {medicine.dosageInMg}mg</td>
+                  <td>{medicine.name} {medicine.dosageInMg/10}mg</td>
                   <td>₹{medicine.price}</td>
                   <td>{medicine.stockQuantity}</td>
                   <td>
@@ -186,6 +189,7 @@ function Dashboard() {
                     >
                       Add
                     </Button>
+                    
                   </td>
                 </tr>
               ))}
