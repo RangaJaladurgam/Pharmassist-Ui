@@ -93,7 +93,7 @@ function Dashboard() {
       <div className="dashboard-left-container">
         <div className="left-inner">
           <p>Cart</p>
-          <table border="1" style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
             <thead>
               <tr>
                 <th>Manufacturer</th>
@@ -134,7 +134,7 @@ function Dashboard() {
               )}
               {cartList.length > 0 && (
                 <tr>
-                  <td colSpan="4" style={{ textAlign: "right", fontWeight: "bold" }}>Total:</td>
+                  <td colSpan="4" style={{ textAlign: "right", fontWeight: "bold",paddingBlock:"0.5rem" }}>Total:</td>
                   <td colSpan="2">₹{totalCartValue}</td>
                 </tr>
               )}
@@ -164,7 +164,8 @@ function Dashboard() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <table border="1" style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
+          <div className="medicine-table">
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
             <thead>
               <tr>
                 <th>Manufacturer</th>
@@ -195,6 +196,7 @@ function Dashboard() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>
