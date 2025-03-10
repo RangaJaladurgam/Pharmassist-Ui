@@ -29,7 +29,8 @@ function Dashboard() {
         const today = new Date().toISOString().split("T")[0];
 
         const filteredMedicines = allMedicines.filter(
-          (medicine) => medicine.stockQuantity > 0 && medicine.expiryDate >= today
+          (medicine) =>
+            medicine.stockQuantity > 0 && medicine.expiryDate >= today
         );
 
         setMedicines(filteredMedicines);
@@ -56,11 +57,20 @@ function Dashboard() {
 
   const handleAddMedicine = useCallback((medicine) => {
     setCartList((prev) => {
-      return prev.map((item) =>
-        item.medicineId === medicine.medicineId
-          ? { ...item, quantity: Math.min(item.quantity + 1, item.stockQuantity) }
-          : item
-      ).concat(!prev.some((item) => item.medicineId === medicine.medicineId) ? [{ ...medicine, quantity: 1 }] : []);
+      return prev
+        .map((item) =>
+          item.medicineId === medicine.medicineId
+            ? {
+                ...item,
+                quantity: Math.min(item.quantity + 1, item.stockQuantity),
+              }
+            : item
+        )
+        .concat(
+          !prev.some((item) => item.medicineId === medicine.medicineId)
+            ? [{ ...medicine, quantity: 1 }]
+            : []
+        );
     });
   }, []);
 
@@ -68,14 +78,19 @@ function Dashboard() {
     setCartList((prev) =>
       prev.map((item) =>
         item.medicineId === medicineId
-          ? { ...item, quantity: Math.max(1, Math.min(newQuantity, item.stockQuantity)) }
+          ? {
+              ...item,
+              quantity: Math.max(1, Math.min(newQuantity, item.stockQuantity)),
+            }
           : item
       )
     );
   }, []);
 
   const handleRemove = useCallback((medicineId) => {
-    setCartList((prev) => prev.filter((item) => item.medicineId !== medicineId));
+    setCartList((prev) =>
+      prev.filter((item) => item.medicineId !== medicineId)
+    );
   }, []);
 
   const filteredMedicines = useMemo(() => {
@@ -93,7 +108,13 @@ function Dashboard() {
       <div className="dashboard-left-container">
         <div className="left-inner">
           <p>Cart</p>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              fontSize: "11px",
+            }}
+          >
             <thead>
               <tr>
                 <th>Manufacturer</th>
@@ -107,21 +128,42 @@ function Dashboard() {
             <tbody>
               {cartList.map((medicine) => (
                 <tr key={medicine.medicineId}>
-                  <td style={{ textAlign: "center" }}>{medicine.manufacturer}</td>
-                  <td style={{ textAlign: "center" }}>{medicine.name} {medicine.dosageInMg/10}mg</td>
+                  <td style={{ textAlign: "center" }}>
+                    {medicine.manufacturer}
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    {medicine.name} {medicine.dosageInMg / 10}mg
+                  </td>
                   <td style={{ textAlign: "center" }}>₹{medicine.price}</td>
                   <td style={{ textAlign: "center" }}>
-                    <input type="number"
+                    <input
+                      type="number"
                       value={medicine.quantity}
-                      onChange={(e) => handleQuantityChange(medicine.medicineId, parseInt(e.target.value, 10) || 1)}
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          medicine.medicineId,
+                          parseInt(e.target.value, 10) || 1
+                        )
+                      }
                       slotProps={{ min: 1, max: medicine.stockQuantity }}
                       size="small"
-                      style={{ width: "4rem",height:"1rem",border:"none",fontSize:"11px",textAlign:"center"}}/>
-              
+                      style={{
+                        width: "4rem",
+                        height: "1rem",
+                        border: "none",
+                        fontSize: "11px",
+                        textAlign: "center",
+                      }}
+                    />
                   </td>
-                  <td style={{ textAlign: "center" }}>₹{medicine.price * medicine.quantity}</td>
                   <td style={{ textAlign: "center" }}>
-                    <Button color="error" onClick={() => handleRemove(medicine.medicineId)}>
+                    ₹{medicine.price * medicine.quantity}
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <Button
+                      color="error"
+                      onClick={() => handleRemove(medicine.medicineId)}
+                    >
                       <i className="fa-solid fa-trash"></i>
                     </Button>
                   </td>
@@ -129,73 +171,120 @@ function Dashboard() {
               ))}
               {cartList.length === 0 && (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: "center" }}>Empty Cart</td>
+                  <td colSpan="6" style={{ textAlign: "center",paddingBlock:"1rem" }}>
+                    Empty Cart
+                  </td>
                 </tr>
               )}
               {cartList.length > 0 && (
-                <tr>
-                  <td colSpan="4" style={{ textAlign: "right", fontWeight: "bold",paddingBlock:"0.5rem" }}>Total:</td>
-                  <td colSpan="2">₹{totalCartValue}</td>
+                <tr style={{ backgroundColor: "rgb(0, 167, 8)" }}>
+                  <td
+                    colSpan="4"
+                    style={{
+                      textAlign: "right",
+                      fontWeight: "bold",
+                      paddingBlock: "0.5rem",
+                      color: "white",
+                    }}
+                  >
+                    Total:
+                  </td>
+                  <td
+                    colSpan="2"
+                    style={{
+                      fontWeight: "bold",
+                      paddingBlock: "0.5rem",
+                      fontSize: "12px",
+                      color: "white",
+                    }}
+                  >
+                    ₹{totalCartValue}
+                  </td>
                 </tr>
               )}
             </tbody>
           </table>
-
         </div>
-        <div style={{display:"flex",gap:"0.5rem"}}>
-        {cartList.length > 0 && (
-            <Button variant="contained" color="primary" style={{ marginTop: "10px" }}>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          {cartList.length > 0 && (
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginTop: "10px" }}
+            >
               Checkout
             </Button>
           )}
-          <Button variant="outlined" color="secondary" style={{ marginTop: "10px" }}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            style={{ marginTop: "10px" }}
+          >
             ₹ {totalCartValue}
-            </Button>
+          </Button>
         </div>
-        
       </div>
 
       <div className="dashboard-right-container">
         <div className="right-inner">
           <input
-            style={{ padding: "0.2rem 0.5rem", width: "70%",border:"1px dashed blue" }}
+            style={{
+              padding: "0.2rem 0.5rem",
+              width: "70%",
+              border: "1px dashed blue",
+            }}
             type="text"
             placeholder="Search Medicine..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <div className="medicine-table">
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
-            <thead>
-              <tr>
-                <th>Manufacturer</th>
-                <th>Medicine Name</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredMedicines.map((medicine) => (
-                <tr key={medicine.medicineId}
-                >
-                  <td>{medicine.manufacturer}</td>
-                  <td>{medicine.name} {medicine.dosageInMg/10}mg</td>
-                  <td>₹{medicine.price}</td>
-                  <td>{medicine.stockQuantity}</td>
-                  <td>
-                    <Button
-                      onClick={() => handleAddMedicine(medicine)}
-                      disabled={cartList.some(item => item.medicineId === medicine.medicineId && item.quantity >= medicine.stockQuantity)}
-                    >
-                      Add
-                    </Button>
-                    
-                  </td>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: "11px",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th>Manufacturer</th>
+                  <th>Medicine Name</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredMedicines.map((medicine) => (
+                  <tr key={medicine.medicineId}>
+                    <td>{medicine.manufacturer}</td>
+                    <td>
+                      {medicine.name} {medicine.dosageInMg / 10}mg
+                    </td>
+                    <td>₹{medicine.price}</td>
+                    <td>{medicine.stockQuantity}</td>
+                    <td>
+                      <Button
+                        onClick={() => handleAddMedicine(medicine)}
+                        disabled={cartList.some(
+                          (item) =>
+                            item.medicineId === medicine.medicineId &&
+                            item.quantity >= medicine.stockQuantity
+                        )}
+                      >
+                        Add
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+                {filteredMedicines.length === 0 && (
+                  <tr>
+                    <td colSpan="5" style={{textAlign:"center",paddingBlock:"1rem"}}>No Medicines Found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

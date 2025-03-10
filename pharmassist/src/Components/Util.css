@@ -25,46 +25,50 @@
 }
 
 .dashboard-left-container {
-  flex-basis: 50%;
+  width: 50%;
   /* background-color: green; */
 }
 .left-inner {
-    height: 70%;
-    overflow: auto;
-    padding: 1rem 1rem;
-    border: 1px dashed rgb(49, 163, 8);
-    background-color: rgba(255, 255, 255, 0.3); /* Light transparent background */
-  }
-  
+  height: 70%;
+  overflow: auto;
+  padding: 1rem 0.5rem;
+  border: 1px dashed rgb(49, 163, 8);
+  background-color: rgba(255, 255, 255, 0.3); /* Light transparent background */
+}
+
 .right-inner {
   height: 70%;
-
   /* background-color: yellow; */
   border: 1px dashed rgb(0, 166, 255);
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  padding: 0.4rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.4rem 0.5rem;
 }
-.medicine-table{
-    overflow: auto;
+.medicine-table {
+  overflow: auto;
 }
 .dashboard-right-container {
-  flex-basis: 50;
+    width: 50%;
   /* background-color: blue; */
 }
 
-td{
-    text-align: left;
-    padding: 0rem 0.5rem ;
-    border-style: none;
+td {
+  text-align: left;
+  padding: 0rem 0.5rem;
+  border-style: none;
 }
-th{
-    text-align: left;
-    border-style: none;
-    padding: 0.6rem 0.5rem;
+th {
+  text-align: left;
+  border-style: none;
+  padding: 0.6rem 0.5rem;
 }
 
-tr:nth-of-type(even),th{
-    background-color: rgba(67, 180, 255, 0.459);
+.right-inner tr:nth-of-type(even),.right-inner
+th {
+  background-color: rgba(67, 180, 255, 0.459);
+}
+.left-inner tr:nth-of-type(even),.left-inner
+th,.left-inner td input[type='tel']:nth-last-of-type(even) {
+  background-color: rgba(88, 243, 27, 0.645);
 }
