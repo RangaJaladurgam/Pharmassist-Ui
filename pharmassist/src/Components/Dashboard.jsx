@@ -36,7 +36,7 @@ function Dashboard() {
         );
 
         setMedicines(filteredMedicines);
-        console.log(filteredMedicines.length)
+        console.log(filteredMedicines.length);
       } catch (err) {
         console.error("Error fetching medicine:", err);
       }
@@ -109,11 +109,52 @@ function Dashboard() {
   const handleUploadClick = () => {
     setShowUploadForm(true);
   };
+  
+  const handleResetCart = () => {
+    localStorage.removeItem("cartList");
+    setCartList([]); // Clear the state as well
+  };
+  
+  
   return (
     <div style={{ padding: "1rem 4rem" }} className="dashboard-container">
       <div className="dashboard-left-container">
         <div className="left-inner">
-          <p>Cart</p>
+          <div style={{ display: "flex", gap: "0.5rem",justifyContent:"end" }}>
+          <Button
+              variant="text"
+              disabled
+              style={{
+                height: "28px",
+                width: "70%",
+                color: "black",
+                display:"flex",
+                justifyContent:"space-between"
+              }}
+            >
+              <i className="fa-solid fa-hospital"></i>
+              <i className="fa-solid fa-pills"></i>
+              <i className="fa-solid fa-syringe"></i>
+              <i className="fa-solid fa-cart-shopping"></i>
+              <span>CART</span>
+              <i className="fa-solid fa-cart-shopping"></i>
+              <i className="fa-solid fa-capsules"></i>
+              <i className="fa-solid fa-stethoscope"></i>
+              <i className="fa-solid fa-hospital"></i>
+            </Button>
+            <Button
+              variant="text"
+              style={{
+                height: "28px",
+                width: "28%",
+                backgroundColor: "rgba(228, 17, 17, 0.66)",
+                color: "white",
+              }}
+              onClick={handleResetCart}
+            >
+              Clear &nbsp;<i className="fa-solid fa-trash"></i>
+            </Button>
+          </div>
           <table
             style={{
               width: "100%",
@@ -184,7 +225,7 @@ function Dashboard() {
                 <tr>
                   <td
                     colSpan="6"
-                    style={{ textAlign: "center", paddingBlock: "1rem" }}
+                    style={{ textAlign: "center", paddingBlock: "1rem",fontSize:"14px" }}
                   >
                     Empty Cart
                   </td>
@@ -241,7 +282,7 @@ function Dashboard() {
 
       <div className="dashboard-right-container">
         <div className="right-inner">
-          <div style={{display:"flex",gap:"0.5rem"}}>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
             <input
               style={{
                 padding: "0.2rem 0.5rem",
@@ -253,7 +294,16 @@ function Dashboard() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button variant="text" style={{ height: "28px",width:"28%",backgroundColor:"rgba(30, 150, 255, 0.483)",color:"white" }} onClick={handleUploadClick}>
+            <Button
+              variant="text"
+              style={{
+                height: "28px",
+                width: "28%",
+                backgroundColor: "rgba(17, 121, 212, 0.48)",
+                color: "white",
+              }}
+              onClick={handleUploadClick}
+            >
               UPLOAD &nbsp;<i className="fa-solid fa-cloud-arrow-up"></i>
             </Button>
           </div>
@@ -314,7 +364,9 @@ function Dashboard() {
         </div>
       </div>
       {/* Floating Upload Form */}
-      {showUploadForm && <FloatingUploadForm onClose={() => setShowUploadForm(false)} />}
+      {showUploadForm && (
+        <FloatingUploadForm onClose={() => setShowUploadForm(false)} />
+      )}
     </div>
   );
 }

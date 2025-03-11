@@ -31,7 +31,10 @@
 .left-inner {
   height: 70%;
   overflow: auto;
-  padding: 1rem 0.5rem;
+  padding: 0.4rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
   border: 1px dashed rgb(49, 163, 8);
   background-color: rgba(255, 255, 255, 0.3); /* Light transparent background */
 }
