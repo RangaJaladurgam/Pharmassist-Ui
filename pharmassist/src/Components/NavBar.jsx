@@ -80,7 +80,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={()=>{
                     handleCloseUserMenu();
-                    if(setting === "Profile") navigate("/profile");
+                    if(setting === "Profile") navigate("/admin/profile");
                     if(setting === "Dashboard") navigate("/dashboard");
                     if(setting === "Logout") handleLogout();
                   } }>

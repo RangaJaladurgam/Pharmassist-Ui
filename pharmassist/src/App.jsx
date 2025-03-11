@@ -15,8 +15,36 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import PharmacyProfile from "./Components/PharmacyProfile";
 import DashMenu from "./Components/DashMenu";
 import FloatingForm from "./Components/FloatingForm ";
+import AdminProfile from "./Components/AdminProfile";
 
-function App({ isLoggedIn, setIsLoggedIn }) {
+const EXPIRY_TIME = 60 * 60 * 1000; // 1 hour
+
+function App({ isLoggedIn, setIsLoggedIn, handleLogout }) {
+  useEffect(() => {
+    let timeout;
+
+    const resetTimer = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        handleLogout(); // Logout user after inactivity
+      }, EXPIRY_TIME);
+    };
+
+    // Event listeners for user activity
+    window.addEventListener("mousemove", resetTimer);
+    window.addEventListener("keypress", resetTimer);
+    window.addEventListener("click", resetTimer);
+
+    resetTimer(); // Start timer initially
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("keypress", resetTimer);
+      window.removeEventListener("click", resetTimer);
+    };
+  }, [handleLogout]);
+
   return (
     <>
       {/* DashMenu only if logged in */}
@@ -35,6 +63,7 @@ function App({ isLoggedIn, setIsLoggedIn }) {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/show-pharmacy" element={<PharmacyProfile />} />
           <Route path="/link-pharmacy" element={<FloatingForm />} />
+          <Route path="/admin/profile" element={<AdminProfile/>} />
         </Route>
 
         {/* Redirect unknown routes to login */}
@@ -54,11 +83,22 @@ const AppWrapper = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    alert("Session expired. Please log in again.");
+    window.location.href = "/login"; // Redirect to login
+  };
+
   return (
     <Router>
       <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <div className="container">
-        <App isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        <App
+          isLoggedIn={isLoggedIn}
+          setIsLoggedIn={setIsLoggedIn}
+          handleLogout={handleLogout}
+        />
       </div>
     </Router>
   );
