@@ -3,16 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import axios from "axios";
 import FloatingForm from "./FloatingForm "; // Import the floating form
+import FloatingUploadForm from "./FloatingUploadForm";
 
 function DashMenu() {
   const navigate = useNavigate();
   const [checkPharmacy, setCheckPharmacy] = useState(false);
   const [showForm, setShowForm] = useState(false); // State to show the form
+    const [showUploadForm, setShowUploadForm] = useState(false);
 
-  const menuItems = ["Dashboard","Upload Medicines", "Transactions", "Patients","Show Admins"];
+  const menuItems = ["Dashboard | My Pharma","Upload Medicines", "Transactions", "Patients","Show Admins"];
 
   if (checkPharmacy) menuItems.unshift("Link Pharmacy");
-  else menuItems.push("Show Pharmacy");
+  else menuItems.push("My Pharmacy");
 
   // Checking if logged in
   useEffect(() => {
@@ -54,8 +56,11 @@ function DashMenu() {
     fetchProfile();
   }, []);
 
+  const handleUploadClick = () => {
+    setShowUploadForm(true);
+  };
   return (
-    <div className="dash-menu-container" style={{ borderBottom: "1px dashed #a59797b0", padding: "0.1rem 4rem" }}>
+    <div className="dash-menu-container" style={{ borderBottom: "1px dashed #a59797b0", padding: "0.1rem 4rem",backgroundColor:"white" }}>
       <ul className="dash-menu" style={{ display: "flex", gap: "1rem" }}>
         {menuItems.map((item) => (
           <li
@@ -64,8 +69,9 @@ function DashMenu() {
             key={item}
             onClick={() => {
               if (item === "Link Pharmacy") setShowForm(true); // Open the floating form
-              if (item === "Show Pharmacy") navigate("/show-pharmacy");
-              if(item === "Dashboard") navigate("/dasboard");
+              if (item === "Upload Medicines") setShowUploadForm(true); // Open the floating form
+              if (item === "My Pharmacy") navigate("/show-pharmacy");
+              if(item === "Dashboard | My Pharma") navigate("/dasboard");
             }}
           >
             <Button color={item !== "Link Pharmacy" ? "primary" : "error"}>{item}</Button>
@@ -75,6 +81,8 @@ function DashMenu() {
 
       {/* Floating Form Component */}
       {showForm && <FloatingForm showForm={showForm} setShowForm={setShowForm} />}
+      {/* Floating Upload Form */}
+      {showUploadForm && <FloatingUploadForm onClose={() => setShowUploadForm(false)} />}
     </div>
   );
 }

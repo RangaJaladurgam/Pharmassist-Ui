@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, Typography, Container, Box } from "@mui/material";
+import { Button } from "@mui/material";
 import axios from "axios";
 function AdminProfile() {
   const [admin, setAdmin] = useState({
@@ -33,27 +33,16 @@ function AdminProfile() {
   }, []);
 
   return (
-    <div>
-      <Container maxWidth="sm">
-        <Card sx={{ mt: 4, p: 2, boxShadow: 3, borderRadius: 2 }}>
-          <CardContent>
-            <Typography variant="h5" fontWeight="bold" gutterBottom>
-              Profile
-            </Typography>
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="body1">
-                <strong>Email:</strong> {admin.adminEmail}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Phone No:</strong> {admin.adminPhone}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Pharmacy :</strong> {admin.adminPharmacy}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-      </Container>
+    <div className="" style={{padding:"1rem 4rem",fontSize:"17px"}}>
+        <div style={{display:"flex",flexDirection:"column",gap:"1rem",padding:"1rem 2rem"}}>
+            <h2>DETAILS</h2>
+            <p>ADMIN NAME : {admin.adminEmail.toUpperCase().split("@GMAIL.COM")} </p>
+            <p>ADMIN EMAIL : {admin.adminEmail.toUpperCase()} </p>
+            <p>PHONE NO. : {admin.adminPhone} </p>
+            <p>PHARMACY : {admin.adminPharmacy.toUpperCase()} </p>
+            <Button variant="contained">EDIT PROFILE</Button>
+        </div>
+      
     </div>
   );
 }

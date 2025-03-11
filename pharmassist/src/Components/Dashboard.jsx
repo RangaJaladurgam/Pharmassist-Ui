@@ -2,12 +2,14 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
+import FloatingUploadForm from "./FloatingUploadForm";
 
 function Dashboard() {
   const navigate = useNavigate();
   const [medicines, setMedicines] = useState([]);
   const [cartList, setCartList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showUploadForm, setShowUploadForm] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -22,7 +24,7 @@ function Dashboard() {
       try {
         const response = await axios.get("http://localhost:7000/medicines", {
           headers: { Authorization: `Bearer ${token}` },
-          validateStatus: (status) => status === 200 || status === 302, 
+          validateStatus: (status) => status === 200 || status === 302,
         });
 
         const allMedicines = response.data?.data || [];
@@ -34,6 +36,7 @@ function Dashboard() {
         );
 
         setMedicines(filteredMedicines);
+        console.log(filteredMedicines.length);
       } catch (err) {
         console.error("Error fetching medicine:", err);
       }
@@ -103,107 +106,160 @@ function Dashboard() {
     return cartList.reduce((acc, item) => acc + item.price * item.quantity, 0);
   }, [cartList]);
 
+  const handleUploadClick = () => {
+    setShowUploadForm(true);
+  };
+
+  const handleResetCart = () => {
+    localStorage.removeItem("cartList");
+    setCartList([]); // Clear the state as well
+  };
+
   return (
     <div style={{ padding: "1rem 4rem" }} className="dashboard-container">
       <div className="dashboard-left-container">
         <div className="left-inner">
-          <p>Cart</p>
-          <table
+          <div
+            style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}
+          >
+            <Button
+              variant="text"
+              disabled
+              style={{
+                height: "28px",
+                width: "100%",
+                color: "rgb(63 81 181)",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <i className="fa-solid fa-hospital"></i>
+              <i className="fa-solid fa-pills"></i>
+              <i className="fa-solid fa-syringe"></i>
+              <i className="fa-solid fa-cart-shopping"></i>
+              <span>CART</span>
+              <i className="fa-solid fa-cart-shopping"></i>
+              <i className="fa-solid fa-capsules"></i>
+              <i className="fa-solid fa-stethoscope"></i>
+              <i className="fa-solid fa-hospital"></i>
+            </Button>
+          </div>
+          <div className="medicine-table">
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: "11px",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th>Manufacturer</th>
+                  <th>Medicine Name</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cartList.map((medicine) => (
+                  <tr key={medicine.medicineId}>
+                    <td style={{ textAlign: "center" }}>
+                      {medicine.manufacturer}
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      {medicine.name} {medicine.dosageInMg / 10}mg
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      ₹{parseFloat(medicine.price.toFixed(2))}
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <input
+                        type="number"
+                        value={medicine.quantity}
+                        onChange={(e) =>
+                          handleQuantityChange(
+                            medicine.medicineId,
+                            parseInt(e.target.value, 10) || 1
+                          )
+                        }
+                        slotprops={{ min: 1, max: medicine.stockQuantity }}
+                        size="small"
+                        style={{
+                          width: "4rem",
+                          height: "1rem",
+                          border: "none",
+                          fontSize: "11px",
+                          textAlign: "center",
+                        }}
+                      />
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      ₹
+                      {parseFloat(
+                        (medicine.price * medicine.quantity).toFixed(2)
+                      )}
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <Button
+                        color="error"
+                        onClick={() => handleRemove(medicine.medicineId)}
+                      >
+                        <i className="fa-solid fa-trash"></i>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+                {cartList.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan="6"
+                      style={{
+                        textAlign: "center",
+                        paddingBlock: "1rem",
+                        fontSize: "14px",
+                      }}
+                    >
+                      Empty Cart
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div
             style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              fontSize: "11px",
+              display:"flex",
+              justifyContent:"space-between"
             }}
           >
-            <thead>
-              <tr>
-                <th>Manufacturer</th>
-                <th>Medicine Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cartList.map((medicine) => (
-                <tr key={medicine.medicineId}>
-                  <td style={{ textAlign: "center" }}>
-                    {medicine.manufacturer}
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    {medicine.name} {medicine.dosageInMg / 10}mg
-                  </td>
-                  <td style={{ textAlign: "center" }}>₹{parseFloat((medicine.price).toFixed(2))}</td>
-                  <td style={{ textAlign: "center" }}>
-                    <input
-                      type="number"
-                      value={medicine.quantity}
-                      onChange={(e) =>
-                        handleQuantityChange(
-                          medicine.medicineId,
-                          parseInt(e.target.value, 10) || 1
-                        )
-                      }
-                      slotprops={{ min: 1, max: medicine.stockQuantity }}
-                      size="small"
-                      style={{
-                        width: "4rem",
-                        height: "1rem",
-                        border: "none",
-                        fontSize: "11px",
-                        textAlign: "center",
-                      }}
-                    />
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    ₹{parseFloat((medicine.price * medicine.quantity).toFixed(2))}
-                  </td>
-                  <td style={{ textAlign: "center" }}>
-                    <Button
-                      color="error"
-                      onClick={() => handleRemove(medicine.medicineId)}
-                    >
-                      <i className="fa-solid fa-trash"></i>
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-              {cartList.length === 0 && (
-                <tr>
-                  <td colSpan="6" style={{ textAlign: "center",paddingBlock:"1rem" }}>
-                    Empty Cart
-                  </td>
-                </tr>
-              )}
+            {cartList.length > 0 && (
+            <Button
+              variant="contained"
+              color="error"
+              style={{
+                height: "28px",
+                width: "7rem"
+              }}
+              onClick={handleResetCart}
+            >
+              Clear &nbsp;<i className="fa-solid fa-trash"></i>
+            </Button>
+            )}
               {cartList.length > 0 && (
-                <tr style={{ backgroundColor: "rgb(0, 167, 8)" }}>
-                  <td
-                    colSpan="4"
-                    style={{
-                      textAlign: "right",
-                      fontWeight: "bold",
-                      paddingBlock: "0.5rem",
-                      color: "white",
-                    }}
-                  >
-                    Total:
-                  </td>
-                  <td
-                    colSpan="2"
-                    style={{
-                      fontWeight: "bold",
-                      paddingBlock: "0.5rem",
-                      fontSize: "12px",
-                      color: "white",
-                    }}
-                  >
-                    ₹{totalCartValue}
-                  </td>
-                </tr>
+                <Button
+                  variant="text"
+                  disabled
+                  style={{
+                    height: "28px",
+                    color: "black",
+                    display: "flex"
+                  }}
+                >Total : ₹{parseFloat(totalCartValue.toFixed(2))}</Button>
               )}
-            </tbody>
-          </table>
+           
+          </div>
         </div>
         <div style={{ display: "flex", gap: "0.5rem" }}>
           {cartList.length > 0 && (
@@ -227,17 +283,32 @@ function Dashboard() {
 
       <div className="dashboard-right-container">
         <div className="right-inner">
-          <input
-            style={{
-              padding: "0.2rem 0.5rem",
-              width: "70%",
-              border: "1px dashed blue",
-            }}
-            type="text"
-            placeholder="Search Medicine..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <input
+              style={{
+                padding: "0.2rem 0.5rem",
+                width: "70%",
+                border: "1px dashed blue",
+              }}
+              type="text"
+              placeholder="Search Medicine..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Button
+              variant="text"
+              style={{
+                height: "28px",
+                width: "28%",
+                backgroundColor: "rgb(63 81 181)",
+                color: "white",
+              }}
+              onClick={handleUploadClick}
+            >
+              UPLOAD &nbsp;<i className="fa-solid fa-cloud-arrow-up"></i>
+            </Button>
+          </div>
+
           <div className="medicine-table">
             <table
               style={{
@@ -262,7 +333,7 @@ function Dashboard() {
                     <td>
                       {medicine.name} {medicine.dosageInMg / 10}mg
                     </td>
-                    <td>₹{parseFloat((medicine.price).toFixed(2))}</td>
+                    <td>₹{parseFloat(medicine.price.toFixed(2))}</td>
                     <td>{medicine.stockQuantity}</td>
                     <td>
                       <Button
@@ -280,7 +351,12 @@ function Dashboard() {
                 ))}
                 {filteredMedicines.length === 0 && (
                   <tr>
-                    <td colSpan="5" style={{textAlign:"center",paddingBlock:"1rem"}}>No Medicines Found</td>
+                    <td
+                      colSpan="5"
+                      style={{ textAlign: "center", paddingBlock: "1rem" }}
+                    >
+                      No Medicines Found
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -288,6 +364,10 @@ function Dashboard() {
           </div>
         </div>
       </div>
+      {/* Floating Upload Form */}
+      {showUploadForm && (
+        <FloatingUploadForm onClose={() => setShowUploadForm(false)} />
+      )}
     </div>
   );
 }
