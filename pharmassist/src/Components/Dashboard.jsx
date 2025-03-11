@@ -22,7 +22,7 @@ function Dashboard() {
       try {
         const response = await axios.get("http://localhost:7000/medicines", {
           headers: { Authorization: `Bearer ${token}` },
-          validateStatus: (status) => status === 200 || status === 302,
+          validateStatus: (status) => status === 200 || status === 302, 
         });
 
         const allMedicines = response.data?.data || [];
@@ -134,7 +134,7 @@ function Dashboard() {
                   <td style={{ textAlign: "center" }}>
                     {medicine.name} {medicine.dosageInMg / 10}mg
                   </td>
-                  <td style={{ textAlign: "center" }}>₹{medicine.price}</td>
+                  <td style={{ textAlign: "center" }}>₹{parseFloat((medicine.price).toFixed(2))}</td>
                   <td style={{ textAlign: "center" }}>
                     <input
                       type="number"
@@ -145,7 +145,7 @@ function Dashboard() {
                           parseInt(e.target.value, 10) || 1
                         )
                       }
-                      slotProps={{ min: 1, max: medicine.stockQuantity }}
+                      slotprops={{ min: 1, max: medicine.stockQuantity }}
                       size="small"
                       style={{
                         width: "4rem",
@@ -157,7 +157,7 @@ function Dashboard() {
                     />
                   </td>
                   <td style={{ textAlign: "center" }}>
-                    ₹{medicine.price * medicine.quantity}
+                    ₹{parseFloat((medicine.price * medicine.quantity).toFixed(2))}
                   </td>
                   <td style={{ textAlign: "center" }}>
                     <Button
@@ -262,7 +262,7 @@ function Dashboard() {
                     <td>
                       {medicine.name} {medicine.dosageInMg / 10}mg
                     </td>
-                    <td>₹{medicine.price}</td>
+                    <td>₹{parseFloat((medicine.price).toFixed(2))}</td>
                     <td>{medicine.stockQuantity}</td>
                     <td>
                       <Button

@@ -9,7 +9,7 @@ function DashMenu() {
   const [checkPharmacy, setCheckPharmacy] = useState(false);
   const [showForm, setShowForm] = useState(false); // State to show the form
 
-  const menuItems = ["Upload Medicines", "Transactions", "Patients"];
+  const menuItems = ["Dashboard","Upload Medicines", "Transactions", "Patients","Show Admins"];
 
   if (checkPharmacy) menuItems.unshift("Link Pharmacy");
   else menuItems.push("Show Pharmacy");
@@ -65,6 +65,7 @@ function DashMenu() {
             onClick={() => {
               if (item === "Link Pharmacy") setShowForm(true); // Open the floating form
               if (item === "Show Pharmacy") navigate("/show-pharmacy");
+              if(item === "Dashboard") navigate("/dasboard");
             }}
           >
             <Button color={item !== "Link Pharmacy" ? "primary" : "error"}>{item}</Button>
