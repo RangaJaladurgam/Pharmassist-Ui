@@ -2,12 +2,14 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
+import FloatingUploadForm from "./FloatingUploadForm";
 
 function Dashboard() {
   const navigate = useNavigate();
   const [medicines, setMedicines] = useState([]);
   const [cartList, setCartList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showUploadForm, setShowUploadForm] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,6 +36,7 @@ function Dashboard() {
         );
 
         setMedicines(filteredMedicines);
+        console.log(filteredMedicines.length)
       } catch (err) {
         console.error("Error fetching medicine:", err);
       }
@@ -103,6 +106,9 @@ function Dashboard() {
     return cartList.reduce((acc, item) => acc + item.price * item.quantity, 0);
   }, [cartList]);
 
+  const handleUploadClick = () => {
+    setShowUploadForm(true);
+  };
   return (
     <div style={{ padding: "1rem 4rem" }} className="dashboard-container">
       <div className="dashboard-left-container">
@@ -247,7 +253,7 @@ function Dashboard() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button variant="text" style={{ height: "28px",width:"28%",backgroundColor:"rgba(30, 150, 255, 0.483)",color:"white" }}>
+            <Button variant="text" style={{ height: "28px",width:"28%",backgroundColor:"rgba(30, 150, 255, 0.483)",color:"white" }} onClick={handleUploadClick}>
               UPLOAD &nbsp;<i className="fa-solid fa-cloud-arrow-up"></i>
             </Button>
           </div>
@@ -307,6 +313,8 @@ function Dashboard() {
           </div>
         </div>
       </div>
+      {/* Floating Upload Form */}
+      {showUploadForm && <FloatingUploadForm onClose={() => setShowUploadForm(false)} />}
     </div>
   );
 }
