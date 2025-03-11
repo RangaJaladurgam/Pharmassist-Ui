@@ -15,6 +15,7 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import PharmacyProfile from "./Components/PharmacyProfile";
 import DashMenu from "./Components/DashMenu";
 import FloatingForm from "./Components/FloatingForm ";
+import AdminProfile from "./Components/AdminProfile";
 
 const EXPIRY_TIME = 60 * 60 * 1000; // 1 hour
 
@@ -62,6 +63,7 @@ function App({ isLoggedIn, setIsLoggedIn, handleLogout }) {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/show-pharmacy" element={<PharmacyProfile />} />
           <Route path="/link-pharmacy" element={<FloatingForm />} />
+          <Route path="/admin/profile" element={<AdminProfile/>} />
         </Route>
 
         {/* Redirect unknown routes to login */}
