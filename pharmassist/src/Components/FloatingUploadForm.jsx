@@ -98,7 +98,7 @@ const FloatingUploadForm = ({ onClose }) => {
           <Button variant="contained" startIcon={<CloudUploadIcon />} onClick={handleUpload} disabled={!file}>
             Upload
           </Button>
-          <Button variant="outlined" color="secondary" onClick={onClose}>
+          <Button variant="outlined" color="error" onClick={onClose}>
             Cancel
           </Button>
         </Box>
