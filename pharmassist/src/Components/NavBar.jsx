@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const navigate = useNavigate();
-  const settings = ['Profile', 'Dashboard', 'Logout'];
+  const settings = ['My Profile', 'Dashboard', 'Logout'];
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -59,7 +59,7 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={() => {
                   handleCloseUserMenu();
-                  if (setting === "Profile") navigate("/admin/profile");
+                  if (setting === "My Profile") navigate("/admin/profile");
                   if (setting === "Dashboard") navigate("/dashboard");
                   if (setting === "Logout") handleLogout();
                 }}>

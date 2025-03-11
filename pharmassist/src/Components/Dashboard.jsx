@@ -22,7 +22,7 @@ function Dashboard() {
       try {
         const response = await axios.get("http://localhost:7000/medicines", {
           headers: { Authorization: `Bearer ${token}` },
-          validateStatus: (status) => status === 200 || status === 302, 
+          validateStatus: (status) => status === 200 || status === 302,
         });
 
         const allMedicines = response.data?.data || [];
@@ -134,7 +134,9 @@ function Dashboard() {
                   <td style={{ textAlign: "center" }}>
                     {medicine.name} {medicine.dosageInMg / 10}mg
                   </td>
-                  <td style={{ textAlign: "center" }}>₹{parseFloat((medicine.price).toFixed(2))}</td>
+                  <td style={{ textAlign: "center" }}>
+                    ₹{parseFloat(medicine.price.toFixed(2))}
+                  </td>
                   <td style={{ textAlign: "center" }}>
                     <input
                       type="number"
@@ -157,7 +159,10 @@ function Dashboard() {
                     />
                   </td>
                   <td style={{ textAlign: "center" }}>
-                    ₹{parseFloat((medicine.price * medicine.quantity).toFixed(2))}
+                    ₹
+                    {parseFloat(
+                      (medicine.price * medicine.quantity).toFixed(2)
+                    )}
                   </td>
                   <td style={{ textAlign: "center" }}>
                     <Button
@@ -171,7 +176,10 @@ function Dashboard() {
               ))}
               {cartList.length === 0 && (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: "center",paddingBlock:"1rem" }}>
+                  <td
+                    colSpan="6"
+                    style={{ textAlign: "center", paddingBlock: "1rem" }}
+                  >
                     Empty Cart
                   </td>
                 </tr>
@@ -227,17 +235,23 @@ function Dashboard() {
 
       <div className="dashboard-right-container">
         <div className="right-inner">
-          <input
-            style={{
-              padding: "0.2rem 0.5rem",
-              width: "70%",
-              border: "1px dashed blue",
-            }}
-            type="text"
-            placeholder="Search Medicine..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <div style={{display:"flex",gap:"0.5rem"}}>
+            <input
+              style={{
+                padding: "0.2rem 0.5rem",
+                width: "70%",
+                border: "1px dashed blue",
+              }}
+              type="text"
+              placeholder="Search Medicine..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Button variant="text" style={{ height: "28px",width:"28%",backgroundColor:"rgba(30, 150, 255, 0.483)",color:"white" }}>
+              UPLOAD &nbsp;<i className="fa-solid fa-cloud-arrow-up"></i>
+            </Button>
+          </div>
+
           <div className="medicine-table">
             <table
               style={{
@@ -262,7 +276,7 @@ function Dashboard() {
                     <td>
                       {medicine.name} {medicine.dosageInMg / 10}mg
                     </td>
-                    <td>₹{parseFloat((medicine.price).toFixed(2))}</td>
+                    <td>₹{parseFloat(medicine.price.toFixed(2))}</td>
                     <td>{medicine.stockQuantity}</td>
                     <td>
                       <Button
@@ -280,7 +294,12 @@ function Dashboard() {
                 ))}
                 {filteredMedicines.length === 0 && (
                   <tr>
-                    <td colSpan="5" style={{textAlign:"center",paddingBlock:"1rem"}}>No Medicines Found</td>
+                    <td
+                      colSpan="5"
+                      style={{ textAlign: "center", paddingBlock: "1rem" }}
+                    >
+                      No Medicines Found
+                    </td>
                   </tr>
                 )}
               </tbody>
