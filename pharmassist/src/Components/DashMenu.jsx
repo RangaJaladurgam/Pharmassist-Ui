@@ -55,7 +55,7 @@ function DashMenu() {
   }, []);
 
   return (
-    <div className="dash-menu-container" style={{ borderBottom: "1px dashed #a59797b0", padding: "0.1rem 4rem" }}>
+    <div className="dash-menu-container" style={{ borderBottom: "1px dashed #a59797b0", padding: "0.1rem 4rem",backgroundColor:"white" }}>
       <ul className="dash-menu" style={{ display: "flex", gap: "1rem" }}>
         {menuItems.map((item) => (
           <li
