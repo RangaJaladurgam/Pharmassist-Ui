@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import FloatingUploadForm from "./FloatingUploadForm";
+import FloatingPatientForm from "./FloatingPatientForm";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -11,14 +12,16 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [searched, setSearched] = useState(false);
-  const [custPhoneNumber, SetCustPhoneNumber] = useState("");
+  const [custPhoneNumber, setCustPhoneNumber] = useState("");
+  const [patientFound, setPatientFound] = useState("");
+  const [showForm, setShowForm] = useState(false);
   const [customer, setCustomer] = useState({
-    id: "",
     name: "",
     phoneNumber: "",
     email: "",
-    found: "",
+    gender: "",
   });
+  const [addPatient,setAddPatient] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -128,33 +131,36 @@ function Dashboard() {
     e.preventDefault();
     setSearched(true);
     const token = localStorage.getItem("token");
-    try {
-      const response = await axios.get(
-        "http://localhost:7000/patients/" + custPhoneNumber,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          validateStatus: (status) =>
-            status === 200 || status === 302 || status === 404,
+    if (custPhoneNumber.length === 10) {
+      try {
+        const response = await axios.get(
+          "http://localhost:7000/patients/" + custPhoneNumber,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            validateStatus: (status) =>
+              status === 200 || status === 302 || status === 404,
+          }
+        );
+        console.log(response.data);
+
+        if (response.status !== 404) {
+          const patient = response.data.data;
+          setPatientFound(true);
+          setCustomer({
+            name: patient.name,
+            phoneNumber: custPhoneNumber,
+            email: patient.email,
+            gender: patient.gender,
+          });
+          localStorage.setItem("patientId", response.data.data.patientId);
+        } else {
+          setCustomer({});
+          setPatientFound(false);
+          localStorage.removeItem("patientId");
         }
-      );
-      console.log(response.data);
-      if (response.status !== 404) {
-        const patient = response.data.data;
-        setCustomer({
-          found: true,
-          id: patient.patientId,
-          name: patient.name,
-          phoneNumber: custPhoneNumber,
-          email: patient.email,
-        });
-        localStorage.setItem("patientId", patient.patientId);
-      } else {
-        setCustomer({
-          found: false,
-        });
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
   };
   return (
@@ -289,17 +295,30 @@ function Dashboard() {
               }}
             >
               {cartList.length > 0 && (
-                <Button
-                  variant="contained"
-                  color="error"
-                  style={{
-                    height: "28px",
-                    width: "7rem",
-                  }}
-                  onClick={handleResetCart}
-                >
-                  Clear &nbsp;<i className="fa-solid fa-trash"></i>
-                </Button>
+                <>
+                  <Button
+                    variant="text"
+                    disabled
+                    style={{
+                      height: "28px",
+                      color: "black",
+                      display: "flex",
+                    }}
+                  >
+                    ITEMS : {cartList.length}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    style={{
+                      height: "28px",
+                      width: "7rem",
+                    }}
+                    onClick={handleResetCart}
+                  >
+                    Clear &nbsp;<i className="fa-solid fa-trash"></i>
+                  </Button>
+                </>
               )}
               {cartList.length > 0 && (
                 <Button
@@ -424,11 +443,12 @@ function Dashboard() {
                 type="text" // Change type to text to control input better
                 placeholder="Enter Phone Number"
                 value={custPhoneNumber}
+                minLength={10}
                 maxLength={10} // Restricts to 10 characters
                 onChange={(e) => {
                   const value = e.target.value.replace(/\D/g, ""); // Allow only digits
                   if (value.length <= 10) {
-                    SetCustPhoneNumber(value);
+                    setCustPhoneNumber(value);
                   }
                 }}
               />
@@ -446,40 +466,86 @@ function Dashboard() {
               </Button>
             </form>
           </div>
-          <div>
-            <div style={{display:"flex",justifyContent:"space-between"}}>
+          <div style={{ overflow: "auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between",paddingInline:"0.5rem" }}>
               <p style={{ textDecoration: "underline" }}>PATIENT DETAILS :</p>
               {searched ? (
-                <span style={customer.found ? {color:"green"} : {color:"red"}}> {customer.found ? "Found" : "Not Found"}</span>
+                <span style={{ color: patientFound ? "green" : "red" }}>
+                  {patientFound ? (
+                    <>
+                      FOUND <i className="fa-solid fa-face-smile-wink"></i>
+                    </>
+                  ) : (
+                    <>
+                      NOT FOUND <i className="fa-solid fa-face-sad-tear"></i>
+                    </>
+                  )}
+                </span>
+              ) : null}
+            </div>
+            <div style={{ display: "flex", justifyContent: !patientFound ? "center" : "start"}}>
+              {searched ? (
+                !patientFound ? (
+                  <>
+                  <Button
+                  onClick={() => setShowForm(true)}
+                    style={{
+                      height: "30px",
+                      width:"100%",
+                      marginTop:"0.5rem",
+                      backgroundColor:"rgb(63 81 181)",
+                      color:"white"
+                      
+                    }}
+                  >
+                    ADD PATIENT
+                  </Button>
+                  <p>{addPatient}</p>
+                  </>
+                  
+                ) : (
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>NAME </td>
+                        <td>:</td>
+                        <td>
+                          {patientFound
+                            ? customer.name.charAt(0).toUpperCase() +
+                              customer.name.slice(1)
+                            : ""}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>PHONE </td>
+                        <td>:</td>
+                        <td>{customer.phoneNumber}</td>
+                      </tr>
+                      <tr>
+                        <td>EMAIL </td>
+                        <td>:</td>
+                        <td>{customer.email}</td>
+                      </tr>
+                      <tr>
+                        <td>GENDER </td>
+                        <td>:</td>
+                        <td>{customer.gender}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                )
               ) : (
                 ""
               )}
             </div>
-
-            <table>
-              <tbody>
-                <tr>
-                  <td>NAME </td>
-                  <td>:</td>
-                  <td>{customer.name}</td>
-                </tr>
-                <tr>
-                  <td>PHONE </td>
-                  <td>:</td>
-                  <td>{customer.phoneNumber}</td>
-                </tr>
-                <tr>
-                  <td>EMAIL </td>
-                  <td>:</td>
-                  <td>{customer.email}</td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
         <div className="dashboard-lower">box2</div>
         <div className="dashboard-lower">box3</div>
       </div>
+
+      {/* Floating Form Component */}
+      {showForm && <FloatingPatientForm custPhoneNumber={custPhoneNumber} setAddPatient={setAddPatient} closeForm={() => setShowForm(false)} />}
       {/* Floating Upload Form */}
       {showUploadForm && (
         <FloatingUploadForm onClose={() => setShowUploadForm(false)} />

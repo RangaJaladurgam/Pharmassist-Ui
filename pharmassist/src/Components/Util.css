@@ -85,6 +85,9 @@ th,.left-inner td input[type='tel']:nth-last-of-type(even) {
 .dashboard-lower{
   flex-basis: 33.33%;
   padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   /* background-color: red; */
 }
 .dashboard-lower:nth-child(1){
@@ -96,5 +99,6 @@ th,.left-inner td input[type='tel']:nth-last-of-type(even) {
 .dashboard-lower:nth-child(3){
   border: 1px dashed rgb(0, 166, 255);
 }
+
 
 
