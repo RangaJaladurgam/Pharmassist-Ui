@@ -153,10 +153,12 @@ function Dashboard() {
             gender: patient.gender,
           });
           localStorage.setItem("patientId", response.data.data.patientId);
+          localStorage.setItem("PatientPhoneNumber",custPhoneNumber);
         } else {
           setCustomer({});
           setPatientFound(false);
           localStorage.removeItem("patientId");
+          localStorage.removeItem("PatientPhoneNumber");
         }
       } catch (err) {
         console.log(err);
