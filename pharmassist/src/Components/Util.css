@@ -16,8 +16,8 @@
   gap: 1rem;
 }
 
-.dashboard-container {
-  height: 85vh;
+.dashboard-container,.dashboard-lower-container {
+  height: 60vh;
   /* background-color: red; */
   display: flex;
   justify-content: center;
@@ -29,7 +29,7 @@
   /* background-color: green; */
 }
 .left-inner {
-  height: 70%;
+  height: 100%;
   padding: 0.4rem 0.5rem;
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@
 }
 
 .right-inner {
-  height: 70%;
+  height: 100%;
   /* background-color: yellow; */
   border: 1px dashed rgb(0, 166, 255);
   display: flex;
@@ -78,3 +78,27 @@ th {
 th,.left-inner td input[type='tel']:nth-last-of-type(even) {
   background-color: rgba(88, 243, 27, 0.645);
 }
+.dashboard-lower-container{
+  height: 23vh;
+}
+
+.dashboard-lower{
+  flex-basis: 33.33%;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* background-color: red; */
+}
+.dashboard-lower:nth-child(1){
+  border: 1px dashed rgb(0, 166, 255);
+}
+.dashboard-lower:nth-child(2){
+  border: 1px dashed rgb(0, 255, 94);
+}
+.dashboard-lower:nth-child(3){
+  border: 1px dashed rgb(0, 166, 255);
+}
+
+
+
