@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import FloatingUploadForm from "./FloatingUploadForm";
@@ -22,6 +23,7 @@ function Dashboard() {
     gender: "",
   });
   const [addPatient, setAddPatient] = useState("");
+  const [billCreated, setBillCreated] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -127,6 +129,7 @@ function Dashboard() {
     localStorage.removeItem("patientId");
     localStorage.removeItem("patientBillId");
     setCartList([]); // Clear the state as well
+    setBillCreated(false);
   };
 
   const handleSearchPatient = async (e) => {
@@ -169,37 +172,43 @@ function Dashboard() {
   };
 
   const handleCreateBill = async () => {
+    if (billCreated) return; // Prevent multiple requests
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.post("http://localhost:7000/bills/create",null, {
-        headers: { Authorization: `Bearer ${token}` },
-        params:  {phoneNumber: custPhoneNumber } ,
-        validateStatus: (status) => status === 200 || status === 201,
-      });
-      const billId = response.data.data.billId;
-      localStorage.setItem("patientBillId",billId);
-      for(const item of cartList){
-        try {
-          const responseBag = await axios.post("http://localhost:7000/bills/"+billId+"/add-item",null,{
-            headers: { Authorization: `Bearer ${token}` },
-          params:  {
-            medicineId: item.medicineId,
-            quantity : item.quantity
-          },
+      const response = await axios.post(
+        "http://localhost:7000/bills/create",
+        null,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { phoneNumber: custPhoneNumber },
           validateStatus: (status) => status === 200 || status === 201,
-          })
-          console.log(responseBag.data);
+        }
+      );
+      const billId = response.data.data.billId;
+      localStorage.setItem("patientBillId", billId);
+      for (const item of cartList) {
+        try {
+          const responseBag = await axios.post(
+            "http://localhost:7000/bills/" + billId + "/add-item",
+            null,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+              params: {
+                medicineId: item.medicineId,
+                quantity: item.quantity,
+              },
+              validateStatus: (status) => status === 200 || status === 201,
+            }
+          );
         } catch (error) {
           console.log(error);
         }
-        
       }
-      
+      setBillCreated(true);
     } catch (error) {
       console.log(error);
     }
   };
-  
 
   return (
     <div
@@ -589,9 +598,9 @@ function Dashboard() {
         </div>
         <div className="dashboard-lower">
           <div>
-            <div style={{ display: "flex",flexDirection:"column" }}>
-              <div style={{borderBottom:"1px dashed rgb(12, 154, 64)"}}>
-                <p style={{textAlign:"center"}}>CART VALUE</p>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ borderBottom: "1px dashed rgb(12, 154, 64)" }}>
+                <p style={{ textAlign: "center" }}>CART VALUE</p>
               </div>
               <table style={{ width: "100%" }}>
                 <tbody>
@@ -626,31 +635,35 @@ function Dashboard() {
             </div>
           </div>
           <div>
-            <Button
+          <Button
               onClick={handleCreateBill}
-              disabled={
-                searched && patientFound && totalCartValue > 0 ? false : true
-              }
+              disabled={!(searched && patientFound && totalCartValue > 0)}
               style={{
                 height: "30px",
                 width: "100%",
                 marginTop: "0.5rem",
-                backgroundColor:
-                  searched && patientFound && totalCartValue > 0
-                    ? "rgb(63 81 181)"
-                    : true
-                    ? "gray"
-                    : "rgb(63 81 181)",
+                backgroundColor: billCreated
+                  ? "green"
+                  : searched && patientFound && totalCartValue > 0
+                  ? "rgb(63 81 181)"
+                  : "gray",
                 color: "white",
                 cursor:
-                  searched && patientFound && totalCartValue > 0
+                  billCreated ||
+                  (searched && patientFound && totalCartValue > 0)
                     ? "pointer"
-                    : true
-                    ? "not-allowed"
-                    : "pointer",
+                    : "not-allowed",
+                border: "none",
+                borderRadius: "5px",
               }}
             >
-              Create Bill
+              {billCreated ? (
+                <>
+                  Bill Created &nbsp; <i className="fa-solid fa-check"></i>
+                </>
+              ) : (
+                "Create Bill"
+              )}
             </Button>
           </div>
         </div>

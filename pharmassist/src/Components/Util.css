@@ -106,3 +106,11 @@ th,.left-inner td input[type='tel']:nth-last-of-type(even) {
   text-orientation: sideways-right;
 }
 
+.button {
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+.button.created {
+  background-color: green !important;
+  transform: scale(1.1);
+}
+
