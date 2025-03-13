@@ -21,7 +21,7 @@ function Dashboard() {
     email: "",
     gender: "",
   });
-  const [addPatient,setAddPatient] = useState("");
+  const [addPatient, setAddPatient] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -153,7 +153,7 @@ function Dashboard() {
             gender: patient.gender,
           });
           localStorage.setItem("patientId", response.data.data.patientId);
-          localStorage.setItem("PatientPhoneNumber",custPhoneNumber);
+          localStorage.setItem("PatientPhoneNumber", custPhoneNumber);
         } else {
           setCustomer({});
           setPatientFound(false);
@@ -469,7 +469,13 @@ function Dashboard() {
             </form>
           </div>
           <div style={{ overflow: "auto" }}>
-            <div style={{ display: "flex", justifyContent: "space-between",paddingInline:"0.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                paddingInline: "0.5rem",
+              }}
+            >
               <p style={{ textDecoration: "underline" }}>PATIENT DETAILS :</p>
               {searched ? (
                 <span style={{ color: patientFound ? "green" : "red" }}>
@@ -485,26 +491,29 @@ function Dashboard() {
                 </span>
               ) : null}
             </div>
-            <div style={{ display: "flex", justifyContent: !patientFound ? "center" : "start"}}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: !patientFound ? "center" : "start",
+              }}
+            >
               {searched ? (
                 !patientFound ? (
                   <>
-                  <Button
-                  onClick={() => setShowForm(true)}
-                    style={{
-                      height: "30px",
-                      width:"100%",
-                      marginTop:"0.5rem",
-                      backgroundColor:"rgb(63 81 181)",
-                      color:"white"
-                      
-                    }}
-                  >
-                    ADD PATIENT
-                  </Button>
-                  <p>{addPatient}</p>
+                    <Button
+                      onClick={() => setShowForm(true)}
+                      style={{
+                        height: "30px",
+                        width: "100%",
+                        marginTop: "0.5rem",
+                        backgroundColor: "rgb(63 81 181)",
+                        color: "white",
+                      }}
+                    >
+                      ADD PATIENT
+                    </Button>
+                    <p>{addPatient}</p>
                   </>
-                  
                 ) : (
                   <table>
                     <tbody>
@@ -542,12 +551,65 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="dashboard-lower">box2</div>
+        <div className="dashboard-lower">
+          <div>
+            <div style={{display:"flex"}}>
+              <table style={{width:"100%"}}>
+                <tbody>
+                  <tr>
+                    <td>TOTAL PRICE</td>
+                    <td> : </td>
+                    <td>₹{parseFloat(totalCartValue.toFixed(2))}</td>
+                  </tr>
+                  <tr>
+                    <td>GST (18%)</td>
+                    <td>:</td>
+                    <td>
+                      ₹
+                      {parseFloat(
+                        (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
+                      ).toFixed(2)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>PAYABLE AMOUNT</td>
+                    <td>:</td>
+                    <td>
+                      ₹
+                      {parseFloat(
+                        totalCartValue + (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
+                      ).toFixed(2)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <Button
+              style={{
+                height: "30px",
+                width: "100%",
+                marginTop: "0.5rem",
+                backgroundColor: "rgb(63 81 181)",
+                color: "white",
+              }}
+            >
+              create bill
+            </Button>
+          </div>
+        </div>
         <div className="dashboard-lower">box3</div>
       </div>
 
       {/* Floating Form Component */}
-      {showForm && <FloatingPatientForm custPhoneNumber={custPhoneNumber} setAddPatient={setAddPatient} closeForm={() => setShowForm(false)} />}
+      {showForm && (
+        <FloatingPatientForm
+          custPhoneNumber={custPhoneNumber}
+          setAddPatient={setAddPatient}
+          closeForm={() => setShowForm(false)}
+        />
+      )}
       {/* Floating Upload Form */}
       {showUploadForm && (
         <FloatingUploadForm onClose={() => setShowUploadForm(false)} />

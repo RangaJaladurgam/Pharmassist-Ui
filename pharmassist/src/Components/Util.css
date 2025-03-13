@@ -100,5 +100,9 @@ th,.left-inner td input[type='tel']:nth-last-of-type(even) {
   border: 1px dashed rgb(0, 166, 255);
 }
 
-
+.horizontal-text{
+  /* background-color: red; */
+  writing-mode: vertical-lr;
+  text-orientation: sideways-right;
+}
 
