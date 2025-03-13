@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Button, TextField } from "@mui/material";
+import { Button, MenuItem, TextField } from "@mui/material";
 import axios from "axios";
 import FloatingUploadForm from "./FloatingUploadForm";
 import FloatingPatientForm from "./FloatingPatientForm";
@@ -24,6 +24,7 @@ function Dashboard() {
   });
   const [addPatient, setAddPatient] = useState("");
   const [billCreated, setBillCreated] = useState(false);
+  const [paymentMode, setPaymentMode] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -635,7 +636,7 @@ function Dashboard() {
             </div>
           </div>
           <div>
-          <Button
+            <Button
               onClick={handleCreateBill}
               disabled={!(searched && patientFound && totalCartValue > 0)}
               style={{
@@ -667,7 +668,54 @@ function Dashboard() {
             </Button>
           </div>
         </div>
-        <div className="dashboard-lower">box3</div>
+        <div className="dashboard-lower">
+          <div
+            style={{
+              display: "flex",
+              gap: "0.5rem",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <TextField
+              select
+              fullWidth
+              disabled={!billCreated }
+              label="Payment Mode"
+              variant="outlined"
+              name="payment"
+              value={paymentMode}
+              onChange={(e) => setPaymentMode(e.target.value)}
+              required
+            >
+              <MenuItem value="CASH">CASH</MenuItem>
+              <MenuItem value="CARD">CARD</MenuItem>
+              <MenuItem value="UPI">UPI</MenuItem>
+            </TextField>
+
+            <Button
+              disabled={!billCreated}
+              style={{
+                width: "100%",
+                height:"100%",
+                backgroundColor: billCreated
+                  ? "green"
+                  : billCreated
+                  ? "rgb(63 81 181)"
+                  : "gray",
+                color: "white",
+                cursor:
+                  billCreated 
+                    ? "pointer"
+                    : "not-allowed",
+                border: "none",
+                borderRadius: "5px",
+              }}
+            >
+              Complete Bill
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* Floating Form Component */}
