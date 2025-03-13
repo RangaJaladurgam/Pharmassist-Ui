@@ -94,7 +94,7 @@ th,.left-inner td input[type='tel']:nth-last-of-type(even) {
   border: 1px dashed rgb(0, 166, 255);
 }
 .dashboard-lower:nth-child(2){
-  border: 1px dashed rgb(0, 255, 94);
+  border: 1px dashed rgb(12, 154, 64);
 }
 .dashboard-lower:nth-child(3){
   border: 1px dashed rgb(0, 166, 255);

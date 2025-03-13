@@ -124,6 +124,8 @@ function Dashboard() {
 
   const handleResetCart = () => {
     localStorage.removeItem("cartList");
+    localStorage.removeItem("patientId");
+    localStorage.removeItem("patientBillId");
     setCartList([]); // Clear the state as well
   };
 
@@ -165,6 +167,40 @@ function Dashboard() {
       }
     }
   };
+
+  const handleCreateBill = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post("http://localhost:7000/bills/create",null, {
+        headers: { Authorization: `Bearer ${token}` },
+        params:  {phoneNumber: custPhoneNumber } ,
+        validateStatus: (status) => status === 200 || status === 201,
+      });
+      const billId = response.data.data.billId;
+      localStorage.setItem("patientBillId",billId);
+      for(const item of cartList){
+        try {
+          const responseBag = await axios.post("http://localhost:7000/bills/"+billId+"/add-item",null,{
+            headers: { Authorization: `Bearer ${token}` },
+          params:  {
+            medicineId: item.medicineId,
+            quantity : item.quantity
+          },
+          validateStatus: (status) => status === 200 || status === 201,
+          })
+          console.log(responseBag.data);
+        } catch (error) {
+          console.log(error);
+        }
+        
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
   return (
     <div
       style={{
@@ -553,8 +589,11 @@ function Dashboard() {
         </div>
         <div className="dashboard-lower">
           <div>
-            <div style={{display:"flex"}}>
-              <table style={{width:"100%"}}>
+            <div style={{ display: "flex",flexDirection:"column" }}>
+              <div style={{borderBottom:"1px dashed rgb(12, 154, 64)"}}>
+                <p style={{textAlign:"center"}}>CART VALUE</p>
+              </div>
+              <table style={{ width: "100%" }}>
                 <tbody>
                   <tr>
                     <td>TOTAL PRICE</td>
@@ -577,7 +616,8 @@ function Dashboard() {
                     <td>
                       ₹
                       {parseFloat(
-                        totalCartValue + (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
+                        totalCartValue +
+                          (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
                       ).toFixed(2)}
                     </td>
                   </tr>
@@ -587,15 +627,30 @@ function Dashboard() {
           </div>
           <div>
             <Button
+              onClick={handleCreateBill}
+              disabled={
+                searched && patientFound && totalCartValue > 0 ? false : true
+              }
               style={{
                 height: "30px",
                 width: "100%",
                 marginTop: "0.5rem",
-                backgroundColor: "rgb(63 81 181)",
+                backgroundColor:
+                  searched && patientFound && totalCartValue > 0
+                    ? "rgb(63 81 181)"
+                    : true
+                    ? "gray"
+                    : "rgb(63 81 181)",
                 color: "white",
+                cursor:
+                  searched && patientFound && totalCartValue > 0
+                    ? "pointer"
+                    : true
+                    ? "not-allowed"
+                    : "pointer",
               }}
             >
-              create bill
+              Create Bill
             </Button>
           </div>
         </div>
