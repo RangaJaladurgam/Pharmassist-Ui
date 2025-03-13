@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import FloatingUploadForm from "./FloatingUploadForm";
@@ -21,7 +22,8 @@ function Dashboard() {
     email: "",
     gender: "",
   });
-  const [addPatient,setAddPatient] = useState("");
+  const [addPatient, setAddPatient] = useState("");
+  const [billCreated, setBillCreated] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -124,7 +126,10 @@ function Dashboard() {
 
   const handleResetCart = () => {
     localStorage.removeItem("cartList");
+    localStorage.removeItem("patientId");
+    localStorage.removeItem("patientBillId");
     setCartList([]); // Clear the state as well
+    setBillCreated(false);
   };
 
   const handleSearchPatient = async (e) => {
@@ -153,7 +158,7 @@ function Dashboard() {
             gender: patient.gender,
           });
           localStorage.setItem("patientId", response.data.data.patientId);
-          localStorage.setItem("PatientPhoneNumber",custPhoneNumber);
+          localStorage.setItem("PatientPhoneNumber", custPhoneNumber);
         } else {
           setCustomer({});
           setPatientFound(false);
@@ -165,6 +170,46 @@ function Dashboard() {
       }
     }
   };
+
+  const handleCreateBill = async () => {
+    if (billCreated) return; // Prevent multiple requests
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post(
+        "http://localhost:7000/bills/create",
+        null,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { phoneNumber: custPhoneNumber },
+          validateStatus: (status) => status === 200 || status === 201,
+        }
+      );
+      const billId = response.data.data.billId;
+      localStorage.setItem("patientBillId", billId);
+      for (const item of cartList) {
+        try {
+          const responseBag = await axios.post(
+            "http://localhost:7000/bills/" + billId + "/add-item",
+            null,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+              params: {
+                medicineId: item.medicineId,
+                quantity: item.quantity,
+              },
+              validateStatus: (status) => status === 200 || status === 201,
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      setBillCreated(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div
       style={{
@@ -469,7 +514,13 @@ function Dashboard() {
             </form>
           </div>
           <div style={{ overflow: "auto" }}>
-            <div style={{ display: "flex", justifyContent: "space-between",paddingInline:"0.5rem" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                paddingInline: "0.5rem",
+              }}
+            >
               <p style={{ textDecoration: "underline" }}>PATIENT DETAILS :</p>
               {searched ? (
                 <span style={{ color: patientFound ? "green" : "red" }}>
@@ -485,26 +536,29 @@ function Dashboard() {
                 </span>
               ) : null}
             </div>
-            <div style={{ display: "flex", justifyContent: !patientFound ? "center" : "start"}}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: !patientFound ? "center" : "start",
+              }}
+            >
               {searched ? (
                 !patientFound ? (
                   <>
-                  <Button
-                  onClick={() => setShowForm(true)}
-                    style={{
-                      height: "30px",
-                      width:"100%",
-                      marginTop:"0.5rem",
-                      backgroundColor:"rgb(63 81 181)",
-                      color:"white"
-                      
-                    }}
-                  >
-                    ADD PATIENT
-                  </Button>
-                  <p>{addPatient}</p>
+                    <Button
+                      onClick={() => setShowForm(true)}
+                      style={{
+                        height: "30px",
+                        width: "100%",
+                        marginTop: "0.5rem",
+                        backgroundColor: "rgb(63 81 181)",
+                        color: "white",
+                      }}
+                    >
+                      ADD PATIENT
+                    </Button>
+                    <p>{addPatient}</p>
                   </>
-                  
                 ) : (
                   <table>
                     <tbody>
@@ -542,12 +596,88 @@ function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="dashboard-lower">box2</div>
+        <div className="dashboard-lower">
+          <div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ borderBottom: "1px dashed rgb(12, 154, 64)" }}>
+                <p style={{ textAlign: "center" }}>CART VALUE</p>
+              </div>
+              <table style={{ width: "100%" }}>
+                <tbody>
+                  <tr>
+                    <td>TOTAL PRICE</td>
+                    <td> : </td>
+                    <td>₹{parseFloat(totalCartValue.toFixed(2))}</td>
+                  </tr>
+                  <tr>
+                    <td>GST (18%)</td>
+                    <td>:</td>
+                    <td>
+                      ₹
+                      {parseFloat(
+                        (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
+                      ).toFixed(2)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>PAYABLE AMOUNT</td>
+                    <td>:</td>
+                    <td>
+                      ₹
+                      {parseFloat(
+                        totalCartValue +
+                          (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
+                      ).toFixed(2)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+          <Button
+              onClick={handleCreateBill}
+              disabled={!(searched && patientFound && totalCartValue > 0)}
+              style={{
+                height: "30px",
+                width: "100%",
+                marginTop: "0.5rem",
+                backgroundColor: billCreated
+                  ? "green"
+                  : searched && patientFound && totalCartValue > 0
+                  ? "rgb(63 81 181)"
+                  : "gray",
+                color: "white",
+                cursor:
+                  billCreated ||
+                  (searched && patientFound && totalCartValue > 0)
+                    ? "pointer"
+                    : "not-allowed",
+                border: "none",
+                borderRadius: "5px",
+              }}
+            >
+              {billCreated ? (
+                <>
+                  Bill Created &nbsp; <i className="fa-solid fa-check"></i>
+                </>
+              ) : (
+                "Create Bill"
+              )}
+            </Button>
+          </div>
+        </div>
         <div className="dashboard-lower">box3</div>
       </div>
 
       {/* Floating Form Component */}
-      {showForm && <FloatingPatientForm custPhoneNumber={custPhoneNumber} setAddPatient={setAddPatient} closeForm={() => setShowForm(false)} />}
+      {showForm && (
+        <FloatingPatientForm
+          custPhoneNumber={custPhoneNumber}
+          setAddPatient={setAddPatient}
+          closeForm={() => setShowForm(false)}
+        />
+      )}
       {/* Floating Upload Form */}
       {showUploadForm && (
         <FloatingUploadForm onClose={() => setShowUploadForm(false)} />

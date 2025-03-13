@@ -94,11 +94,23 @@ th,.left-inner td input[type='tel']:nth-last-of-type(even) {
   border: 1px dashed rgb(0, 166, 255);
 }
 .dashboard-lower:nth-child(2){
-  border: 1px dashed rgb(0, 255, 94);
+  border: 1px dashed rgb(12, 154, 64);
 }
 .dashboard-lower:nth-child(3){
   border: 1px dashed rgb(0, 166, 255);
 }
 
+.horizontal-text{
+  /* background-color: red; */
+  writing-mode: vertical-lr;
+  text-orientation: sideways-right;
+}
 
+.button {
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+.button.created {
+  background-color: green !important;
+  transform: scale(1.1);
+}
 
