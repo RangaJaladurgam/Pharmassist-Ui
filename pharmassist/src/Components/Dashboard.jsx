@@ -29,6 +29,7 @@ function Dashboard() {
   const [cash, setCash] = useState("");
   const [paymentDone, setPaymentDone] = useState(false);
   const [billCompleted, setBillCompleted] = useState(false);
+  const [billPrinted, setBillPrinted] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -262,9 +263,11 @@ function Dashboard() {
 
       // Cleanup
       document.body.removeChild(link);
+      setBillPrinted(true);
     } catch (error) {
       console.error("Error downloading PDF:", error);
     }
+
 };
 
   
@@ -902,10 +905,10 @@ function Dashboard() {
                 style={{
                   width: "100%",
                   height: "100%",
-                  backgroundColor: billCompleted
-                    ? "rgb(0, 166, 255)"
+                  backgroundColor: billPrinted
+                    ? "green"
                     : billCompleted
-                    ? "rgb(63 81 181)"
+                    ? "rgb(0, 166, 255)"
                     : "gray",
                   color: "white",
                   cursor: billCompleted ? "pointer" : "not-allowed",
@@ -914,7 +917,14 @@ function Dashboard() {
                   flexBasis: "50%",
                 }}
               >
-                Print Bill
+                {billPrinted ? (
+                  <>
+                    {" "}
+                    Bill Printed &nbsp;<i className="fa-solid fa-check"></i>{" "}
+                  </>
+                ) : (
+                  "Print Bill"
+                )}
               </Button>
             </div>
           </div>
