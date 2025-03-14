@@ -16,7 +16,8 @@
   gap: 1rem;
 }
 
-.dashboard-container,.dashboard-lower-container {
+.dashboard-container,
+.dashboard-lower-container {
   height: 60vh;
   /* background-color: red; */
   display: flex;
@@ -37,13 +38,13 @@
   border: 1px dashed rgb(49, 163, 8);
   background-color: rgba(255, 255, 255, 0.3); /* Light transparent background */
   /* background-color: red; */
-  position:"relative";
+  position: "relative";
 }
 
 .right-inner {
   height: 100%;
   /* background-color: yellow; */
-  border: 1px dashed rgb(0, 166, 255);
+  border: 1px dashed rgb(0, 110, 255);
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -54,35 +55,43 @@
   overflow: auto;
 }
 .dashboard-right-container {
-    width: 50%;
+  width: 50%;
   /* background-color: blue; */
 }
 
 td {
   text-align: left;
   padding: 0rem 0.5rem;
-  border-style: none;
 }
 th {
   font-size: 13px;
   text-align: left;
-  border-style: none;
   padding: 0.6rem 0.5rem;
 }
 
-.right-inner tr:nth-of-type(even),.right-inner
-th {
+.right-inner th,
+.right-inner td {
+  border: 1px dashed rgba(243, 167, 27, 0.645);
+}
+.left-inner th,
+.left-inner td {
+  border: 1px dashed rgba(67, 180, 255, 0.459);
+}
+
+.right-inner tr:nth-of-type(even),
+.right-inner th {
   background-color: rgba(67, 180, 255, 0.459);
 }
-.left-inner tr:nth-of-type(even),.left-inner
-th,.left-inner td input[type='tel']:nth-last-of-type(even) {
-  background-color: rgba(88, 243, 27, 0.645);
+.left-inner tr:nth-of-type(even),
+.left-inner th,
+.left-inner td input[type="tel"]:nth-last-of-type(even) {
+  background-color: rgba(243, 167, 27, 0.645);
 }
-.dashboard-lower-container{
+.dashboard-lower-container {
   height: 23vh;
 }
 
-.dashboard-lower{
+.dashboard-lower {
   flex-basis: 33.33%;
   padding: 0.5rem;
   display: flex;
@@ -90,23 +99,23 @@ th,.left-inner td input[type='tel']:nth-last-of-type(even) {
   gap: 0.5rem;
   /* background-color: red; */
 }
-.dashboard-lower:nth-child(1){
-  border: 1px dashed rgb(0, 166, 255);
+.dashboard-lower:nth-child(1) {
+  border: 1px dashed rgb(0, 110, 255);
 }
-.dashboard-lower:nth-child(2){
+.dashboard-lower:nth-child(2) {
   border: 1px dashed rgb(12, 154, 64);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
-.dashboard-lower:nth-child(3){
-  border: 1px dashed rgb(0, 166, 255);
+.dashboard-lower:nth-child(3) {
+  border: 1px dashed rgb(0, 110, 255);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-.horizontal-text{
+.horizontal-text {
   /* background-color: red; */
   background-color: rgb(0, 110, 255);
   writing-mode: vertical-lr;
@@ -121,3 +130,33 @@ th,.left-inner td input[type='tel']:nth-last-of-type(even) {
   transform: scale(1.1);
 }
 
+.logo-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.logo-row {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  height: 100%;
+  /* background-color: red; */
+}
+
+.logo-track {
+  display: flex;
+  gap: 30px;
+}
+
+.logo {
+  width: 150px;  /* Adjust size as needed */
+  height: 90px;
+  background-color: yellow !important;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+}

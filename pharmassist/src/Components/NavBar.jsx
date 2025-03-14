@@ -7,6 +7,7 @@ import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import Logo1 from "../assets/pharmassist-horizontal-logo-bg.png";
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const navigate = useNavigate();
@@ -33,10 +34,10 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#3f51b5", paddingInline: "3rem", minHeight: "2.5rem" }}>
+    <AppBar position="static" sx={{ backgroundColor: "white", paddingInline: "3rem", minHeight: "2.5rem" }}>
   <Toolbar sx={{ minHeight: "2.5rem", paddingY: "2px" }}>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Pharmassist
+        <Typography variant="h6" sx={{ flexGrow: 1 }} style={{display:"flex"}}>
+          <img src={Logo1} alt="" style={{width:"200px"}}/>
         </Typography>
 
         {isLoggedIn ? (
@@ -73,10 +74,10 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
         ) : (
           <>
             <Link to="/register" style={{ textDecoration: "none" }}>
-              <Button sx={{ mx: 1, color: "white" }}>Register</Button>
+              <Button variant="outlined" sx={{ mx: 1, color: "rgb(0, 110, 255)"  }}>Register</Button>
             </Link>
             <Link to="/login" style={{ textDecoration: "none" }}>
-              <Button sx={{ color: "white" }}>Login</Button>
+              <Button variant="outlined" sx={{ color: "rgb(0, 110, 255)" }}>Login</Button>
             </Link>
           </>
         )}

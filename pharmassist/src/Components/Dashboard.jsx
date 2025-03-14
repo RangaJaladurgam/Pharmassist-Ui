@@ -29,6 +29,7 @@ function Dashboard() {
   const [cash, setCash] = useState("");
   const [paymentDone, setPaymentDone] = useState(false);
   const [billCompleted, setBillCompleted] = useState(false);
+  const [billPrinted, setBillPrinted] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -234,6 +235,42 @@ function Dashboard() {
       console.log(err);
     }
   };
+
+  const handlePrintBill = async () => {
+    const token = localStorage.getItem("token");
+    const billId = localStorage.getItem("patientBillId");
+
+    try {
+      const response = await axios.get(
+        `http://localhost:7000/bills/${billId}/generate`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: "blob", // Handle binary response
+        }
+      );
+
+      // Create a blob object from the response
+      const blob = new Blob([response.data], { type: "application/pdf" });
+
+      // Create a link element to trigger the download
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `pharmacy-bill-${billId}.pdf`; // Set filename dynamically
+
+      // Append to the document and trigger download
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      setBillPrinted(true);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    }
+
+};
+
+  
   return (
     <div
       style={{
@@ -259,7 +296,7 @@ function Dashboard() {
                 style={{
                   height: "28px",
                   width: "100%",
-                  color: "rgb(63 81 181)",
+                  color: "rgb(0, 110, 255)",
                   display: "flex",
                   justifyContent: "space-between",
                 }}
@@ -350,6 +387,7 @@ function Dashboard() {
                           textAlign: "center",
                           paddingBlock: "1rem",
                           fontSize: "14px",
+                          border:"none"
                         }}
                       >
                         Empty Cart
@@ -415,7 +453,7 @@ function Dashboard() {
                 style={{
                   padding: "0.2rem 0.5rem",
                   width: "70%",
-                  border: "1px dashed blue",
+                  border: "1px dashed rgb(0, 110, 255)",
                 }}
                 type="text"
                 placeholder="Search Medicine..."
@@ -427,7 +465,7 @@ function Dashboard() {
                 style={{
                   height: "29px",
                   width: "28%",
-                  backgroundColor: "rgb(63 81 181)",
+                  backgroundColor: "rgb(0, 110, 255)",
                   color: "white",
                 }}
                 onClick={handleUploadClick}
@@ -480,7 +518,7 @@ function Dashboard() {
                     <tr>
                       <td
                         colSpan="5"
-                        style={{ textAlign: "center", paddingBlock: "1rem" }}
+                        style={{ textAlign: "center", paddingBlock: "1rem",border:"none" }}
                       >
                         No Medicines Found
                       </td>
@@ -529,7 +567,7 @@ function Dashboard() {
                 style={{
                   height: "29px",
                   width: "28%",
-                  backgroundColor: "rgb(63 81 181)",
+                  backgroundColor: "rgb(0, 110, 255)",
                   color: "white",
                 }}
               >
@@ -575,7 +613,7 @@ function Dashboard() {
                         height: "30px",
                         width: "100%",
                         marginTop: "0.5rem",
-                        backgroundColor: "rgb(63 81 181)",
+                        backgroundColor: "rgb(0, 110, 255)",
                         color: "white",
                       }}
                     >
@@ -667,7 +705,7 @@ function Dashboard() {
                 backgroundColor: billCreated
                   ? "green"
                   : searched && patientFound && totalCartValue > 0
-                  ? "rgb(63 81 181)"
+                  ? "rgb(0, 110, 255)"
                   : "gray",
                 color: "white",
                 cursor:
@@ -694,6 +732,7 @@ function Dashboard() {
             style={{
               display: "flex",
               gap: "0.5rem",
+              flexDirection:"column",
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -714,8 +753,23 @@ function Dashboard() {
               <MenuItem value="CARD">CARD</MenuItem>
               <MenuItem value="UPI">UPI</MenuItem>
             </TextField>
+            { paymentMode === "" && (
+              <div
+                className="payment-upi"
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <p>Choose Payment to proceed</p>
+              </div>
+            )}
           </div>
           <div>
+            
             {paymentMode === "CASH" && (
               <div
                 className="payment-cash"
@@ -788,7 +842,7 @@ function Dashboard() {
                       <i className="fa-solid fa-check"></i>{" "}
                     </>
                   ) : (
-                    "Card Payment"
+                    "Proceed to Card Payment"
                   )}
                 </Button>
               </div>
@@ -822,7 +876,7 @@ function Dashboard() {
                       <i className="fa-solid fa-check"></i>{" "}
                     </>
                   ) : (
-                    "UPI Payment"
+                    "Proceed to UPI Payment"
                   )}
                 </Button>
               </div>
@@ -844,7 +898,7 @@ function Dashboard() {
                   backgroundColor: billCompleted
                     ? "green"
                     : paymentDone
-                    ? "rgb(63 81 181)"
+                    ? "rgb(0, 110, 255)"
                     : "gray",
                   color: "white",
                   cursor: paymentDone ? "pointer" : "not-allowed",
@@ -863,14 +917,15 @@ function Dashboard() {
                 )}
               </Button>
               <Button
+                onClick={handlePrintBill}
                 disabled={!billCompleted}
                 style={{
                   width: "100%",
                   height: "100%",
-                  backgroundColor: billCompleted
-                    ? "rgb(0, 166, 255)"
+                  backgroundColor: billPrinted
+                    ? "green"
                     : billCompleted
-                    ? "rgb(63 81 181)"
+                    ? "rgb(0, 110, 255)"
                     : "gray",
                   color: "white",
                   cursor: billCompleted ? "pointer" : "not-allowed",
@@ -879,7 +934,14 @@ function Dashboard() {
                   flexBasis: "50%",
                 }}
               >
-                Print Bill
+                {billPrinted ? (
+                  <>
+                    {" "}
+                    Bill Printed &nbsp;<i className="fa-solid fa-check"></i>{" "}
+                  </>
+                ) : (
+                  "Print Bill"
+                )}
               </Button>
             </div>
           </div>
