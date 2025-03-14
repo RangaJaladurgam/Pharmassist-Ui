@@ -5,6 +5,7 @@ import { Button, MenuItem, TextField } from "@mui/material";
 import axios from "axios";
 import FloatingUploadForm from "./FloatingUploadForm";
 import FloatingPatientForm from "./FloatingPatientForm";
+import { green } from "@mui/material/colors";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -25,6 +26,9 @@ function Dashboard() {
   const [addPatient, setAddPatient] = useState("");
   const [billCreated, setBillCreated] = useState(false);
   const [paymentMode, setPaymentMode] = useState("");
+  const [cash, setCash] = useState("");
+  const [paymentDone, setPaymentDone] = useState(false);
+  const [billCompleted, setBillCompleted] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -211,6 +215,25 @@ function Dashboard() {
     }
   };
 
+  const handleCompleteBill = async () => {
+    if (billCompleted) return;
+    const token = localStorage.getItem("token");
+    const billId = localStorage.getItem("patientBillId");
+    try {
+      const response = await axios.post(
+        "http://localhost:7000/bills/" + billId,
+        null,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { paymentMode: paymentMode },
+          validateStatus: (status) => status === 200 || status === 404,
+        }
+      );
+      setBillCompleted(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div
       style={{
@@ -640,9 +663,7 @@ function Dashboard() {
               onClick={handleCreateBill}
               disabled={!(searched && patientFound && totalCartValue > 0)}
               style={{
-                height: "30px",
                 width: "100%",
-                marginTop: "0.5rem",
                 backgroundColor: billCreated
                   ? "green"
                   : searched && patientFound && totalCartValue > 0
@@ -674,13 +695,14 @@ function Dashboard() {
               display: "flex",
               gap: "0.5rem",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
           >
             <TextField
               select
               fullWidth
-              disabled={!billCreated }
+              size="small"
+              disabled={!billCreated}
               label="Payment Mode"
               variant="outlined"
               name="payment"
@@ -692,28 +714,174 @@ function Dashboard() {
               <MenuItem value="CARD">CARD</MenuItem>
               <MenuItem value="UPI">UPI</MenuItem>
             </TextField>
-
-            <Button
-              disabled={!billCreated}
+          </div>
+          <div>
+            {paymentMode === "CASH" && (
+              <div
+                className="payment-cash"
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="number"
+                  label="Cash given"
+                  variant="outlined"
+                  name="cash"
+                  value={cash}
+                  onChange={(e) => setCash(e.target.value)}
+                  onClick={() => setPaymentDone(true)}
+                ></TextField>
+                <TextField
+                  fullWidth
+                  size="small"
+                  label="return change"
+                  variant="outlined"
+                  name="cash"
+                  value={
+                    cash
+                      ? parseFloat(
+                          cash -
+                            parseFloat(
+                              totalCartValue +
+                                (parseFloat(totalCartValue.toFixed(2)) / 100) *
+                                  18.0
+                            ).toFixed(2)
+                        ).toFixed(0)
+                      : ""
+                  }
+                ></TextField>
+              </div>
+            )}
+            {paymentMode === "CARD" && (
+              <div
+                className="payment-cash"
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <Button
+                  fullWidth
+                  onClick={() => setPaymentDone(true)}
+                  style={{
+                    height: "100%",
+                    backgroundColor: paymentDone ? "green" : "rgb(102, 0, 255)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {paymentDone ? (
+                    <>
+                      {" "}
+                      Payment Successfull &nbsp;{" "}
+                      <i className="fa-solid fa-check"></i>{" "}
+                    </>
+                  ) : (
+                    "Card Payment"
+                  )}
+                </Button>
+              </div>
+            )}
+            {paymentMode === "UPI" && (
+              <div
+                className="payment-upi"
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <Button
+                  fullWidth
+                  onClick={() => setPaymentDone(true)}
+                  style={{
+                    height: "100%",
+                    backgroundColor: paymentDone ? "green" : "rgb(102, 0, 255)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {paymentDone ? (
+                    <>
+                      {" "}
+                      Payment Successfull &nbsp;
+                      <i className="fa-solid fa-check"></i>{" "}
+                    </>
+                  ) : (
+                    "UPI Payment"
+                  )}
+                </Button>
+              </div>
+            )}
+            <div
               style={{
-                width: "100%",
-                height:"100%",
-                backgroundColor: billCreated
-                  ? "green"
-                  : billCreated
-                  ? "rgb(63 81 181)"
-                  : "gray",
-                color: "white",
-                cursor:
-                  billCreated 
-                    ? "pointer"
-                    : "not-allowed",
-                border: "none",
-                borderRadius: "5px",
+                display: "flex",
+                gap: "0.5rem",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              Complete Bill
-            </Button>
+              <Button
+                onClick={handleCompleteBill}
+                disabled={!paymentDone}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: billCompleted
+                    ? "green"
+                    : paymentDone
+                    ? "rgb(63 81 181)"
+                    : "gray",
+                  color: "white",
+                  cursor: paymentDone ? "pointer" : "not-allowed",
+                  border: "none",
+                  borderRadius: "5px",
+                  flexBasis: "50%",
+                }}
+              >
+                {billCompleted ? (
+                  <>
+                    {" "}
+                    Bill Completed &nbsp;<i className="fa-solid fa-check"></i>{" "}
+                  </>
+                ) : (
+                  "Complete Bill"
+                )}
+              </Button>
+              <Button
+                disabled={!billCompleted}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: billCompleted
+                    ? "rgb(0, 166, 255)"
+                    : billCompleted
+                    ? "rgb(63 81 181)"
+                    : "gray",
+                  color: "white",
+                  cursor: billCompleted ? "pointer" : "not-allowed",
+                  border: "none",
+                  borderRadius: "5px",
+                  flexBasis: "50%",
+                }}
+              >
+                Print Bill
+              </Button>
+            </div>
           </div>
         </div>
       </div>
