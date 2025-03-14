@@ -234,6 +234,40 @@ function Dashboard() {
       console.log(err);
     }
   };
+
+  const handlePrintBill = async () => {
+    const token = localStorage.getItem("token");
+    const billId = localStorage.getItem("patientBillId");
+
+    try {
+      const response = await axios.get(
+        `http://localhost:7000/bills/${billId}/generate`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: "blob", // Handle binary response
+        }
+      );
+
+      // Create a blob object from the response
+      const blob = new Blob([response.data], { type: "application/pdf" });
+
+      // Create a link element to trigger the download
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `pharmacy-bill-${billId}.pdf`; // Set filename dynamically
+
+      // Append to the document and trigger download
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    }
+};
+
+  
   return (
     <div
       style={{
@@ -863,6 +897,7 @@ function Dashboard() {
                 )}
               </Button>
               <Button
+                onClick={handlePrintBill}
                 disabled={!billCompleted}
                 style={{
                   width: "100%",
