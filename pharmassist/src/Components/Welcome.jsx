@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; 
-import Image1 from "../assets/pexels-padrinan-806427.jpg";
+import Image1 from "../assets/pharmassist-horizontal-logo.png";
 import Image2 from "../assets/pexels-pavel-danilyuk-5998512.jpg";
 import Image3 from "../assets/pexels-pixabay-40568.jpg";
 import Tabs from "@mui/material/Tabs";

@@ -60,7 +60,7 @@ function DashMenu() {
     setShowUploadForm(true);
   };
   return (
-    <div className="dash-menu-container" style={{ borderBottom: "1px dashed #a59797b0", padding: "0.1rem 4rem",backgroundColor:"white" }}>
+    <div className="dash-menu-container" style={{ borderBottom: "1px dashed #a59797b0", padding: "0.1rem 4rem",backgroundColor:"rgb(0, 110, 255)" }}>
       <ul className="dash-menu" style={{ display: "flex", gap: "1rem" }}>
         {menuItems.map((item) => (
           <li
@@ -74,7 +74,7 @@ function DashMenu() {
               if(item === "Dashboard | My Pharma") navigate("/dasboard");
             }}
           >
-            <Button color={item !== "Link Pharmacy" ? "primary" : "error"}>{item}</Button>
+            <Button style={item !== "Link Pharmacy" ? {color:"white"} :{color:"red"}}>{item}</Button>
           </li>
         ))}
       </ul>
