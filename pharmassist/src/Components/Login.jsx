@@ -25,6 +25,8 @@ function Login({ setIsLoggedIn }) {
       const response = await axios.post("http://localhost:7000/auth/login", {
         email: email,
         password: password,
+      },{
+        validateStatus : (status) => status === 200 || status === 401
       });
 
       if (response.status === 200) {
@@ -32,9 +34,11 @@ function Login({ setIsLoggedIn }) {
         localStorage.setItem("token", response.data.token);
         setIsLoggedIn(true);
         navigate("/dashboard");
+      } else if (response.status === 401) {
+        setError("Invalid Credentials!!");
       }
     } catch (error) {
-      setError("Invalid Credentials!!");
+      setError("Server Not Responding!!");
     }
   };
   return (
