@@ -25,6 +25,7 @@ function Dashboard() {
   const [addPatient, setAddPatient] = useState("");
   const [billCreated, setBillCreated] = useState(false);
   const [paymentMode, setPaymentMode] = useState("");
+  const [cash, setCash] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -674,13 +675,15 @@ function Dashboard() {
               display: "flex",
               gap: "0.5rem",
               alignItems: "center",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
           >
             <TextField
               select
               fullWidth
-              disabled={!billCreated }
+              size="small"
+              style={{ flexBasis: "50%" }}
+              // disabled={!billCreated}
               label="Payment Mode"
               variant="outlined"
               name="payment"
@@ -697,23 +700,102 @@ function Dashboard() {
               disabled={!billCreated}
               style={{
                 width: "100%",
-                height:"100%",
+                height: "100%",
                 backgroundColor: billCreated
                   ? "green"
                   : billCreated
                   ? "rgb(63 81 181)"
                   : "gray",
                 color: "white",
-                cursor:
-                  billCreated 
-                    ? "pointer"
-                    : "not-allowed",
+                cursor: billCreated ? "pointer" : "not-allowed",
                 border: "none",
                 borderRadius: "5px",
+                flexBasis: "50%",
               }}
             >
               Complete Bill
             </Button>
+          </div>
+          <div>
+            {paymentMode === "CASH" && (
+              <div
+                className="payment-cash"
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="number"
+                  label="Cash given"
+                  variant="outlined"
+                  name="cash"
+                  value={cash}
+                  onChange={(e) => setCash(e.target.value)}
+                ></TextField>
+                <TextField
+                  fullWidth
+                  size="small"
+                  disabled
+                  label="return change"
+                  variant="outlined"
+                  name="cash"
+                  value={cash}
+                ></TextField>
+              </div>
+            )}
+            {paymentMode === "CARD" && (
+              <div
+                className="payment-cash"
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Button
+                  fullWidth
+                  style={{
+                    height: "100%",
+                    backgroundColor: "green",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                  }}
+                >
+                  Card Payment
+                </Button>
+              </div>
+            )}
+            {paymentMode === "UPI" && (
+              <div
+                className="payment-upi"
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Button
+                  fullWidth
+                  style={{
+                    height: "100%",
+                    backgroundColor: "rgb(102, 0, 255)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                  }}
+                >
+                  UPI Payment
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
