@@ -74,10 +74,10 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
         ) : (
           <>
             <Link to="/register" style={{ textDecoration: "none" }}>
-              <Button sx={{ mx: 1, color: "white" }}>Register</Button>
+              <Button variant="outlined" sx={{ mx: 1, color: "rgb(0, 110, 255)"  }}>Register</Button>
             </Link>
             <Link to="/login" style={{ textDecoration: "none" }}>
-              <Button sx={{ color: "white" }}>Login</Button>
+              <Button variant="outlined" sx={{ color: "rgb(0, 110, 255)" }}>Login</Button>
             </Link>
           </>
         )}
