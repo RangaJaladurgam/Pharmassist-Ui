@@ -9,7 +9,6 @@
   overflow: hidden;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-    
 }
 
 .banner div img {
@@ -26,12 +25,44 @@
   margin-inline: 2rem;
 }
 
-.hero{
-    flex-basis: 33%;
-    border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-    /* background-color: red !important; */
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+.hero {
+  flex-basis: 33%;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  /* background-color: red !important; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero:nth-of-type(even) {
+  animation: bounce 2s 0.5s infinite linear;
+}
+.hero:nth-of-type(odd) {
+  animation: bounce-reverse 2s 0.5s infinite linear;
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes bounce-reverse {
+  0% {
+    transform: scale(1.02);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.02);
+  }
 }
