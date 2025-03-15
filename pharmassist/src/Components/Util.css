@@ -145,6 +145,7 @@ th {
   white-space: nowrap;
   height: 100%;
   /* background-color: red; */
+  mix-blend-mode:multiply;
 }
 
 .logo-track {
@@ -155,7 +156,7 @@ th {
 .logo {
   width: 150px;  /* Adjust size as needed */
   height: 90px;
-  background-color: yellow !important;
+  background:transparent;
   object-fit: cover;
   object-position: center;
   border-radius: 10px;
