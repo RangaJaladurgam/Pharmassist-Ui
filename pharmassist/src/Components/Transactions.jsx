@@ -16,6 +16,9 @@ function Transactions() {
   const [todayBills, setTodayBills] = useState(0);
   const [yesterdayBills, setYesterdayBills] = useState(0);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const billsPerPage = 4;
+
   useEffect(() => {
     const calculateStats = () => {
       const currentDate = new Date();
@@ -199,110 +202,149 @@ function Transactions() {
       style: "currency",
       currency: "INR",
     }).format(amount);
+
+  // 🔹 Get the current page's bills using slice()
+  const indexOfLastBill = currentPage * billsPerPage;
+  const indexOfFirstBill = indexOfLastBill - billsPerPage;
+  const currentBills = bills.slice(indexOfFirstBill, indexOfLastBill);
+
+  // 🔹 Change page
+  const totalPages = Math.ceil(bills.length / billsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div
       style={{
         margin: "1rem 4.5rem",
         display: "flex",
-        gap: "1rem",
-        position: "relative",
+        gap: "1rem"
       }}
     >
       {/* Bills Container */}
-      <div
-        className="scroll-bar"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.5rem",
-          flexBasis: "65%",
-          maxHeight: "80vh",
-          overflowY: "auto",
-          paddingRight: "1rem",
-        }}
-      >
-        {loading ? (
-          <p style={{textAlign:"center"}}>Loading bills...</p>
-        ) : bills.length === 0 ? (
-          <p style={{textAlign:"center"}}>No transactions found.</p>
-        ) : (
-          bills.map((bill) => (
-            <div
-              key={bill.billId}
-              style={{
-                width: "100%",
-                border: "1px dashed rgb(0, 110, 255)",
-                padding: "1rem",
-                borderRadius: "10px",
-                background: "rgb(255, 255, 255, 0.5)",
-              }}
-            >
+      <div style={{
+        display:"flex",
+        flexDirection:"column"
+      }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            flexBasis: "65%",
+          }}
+        >
+          {loading ? (
+            <p style={{ textAlign: "center" }}>Loading bills...</p>
+          ) : bills.length === 0 ? (
+            <p style={{ textAlign: "center" }}>No transactions found.</p>
+          ) : (
+            currentBills.map((bill) => (
               <div
+                key={bill.billId}
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
+                  width: "100%",
+                  border: "1px dashed rgb(0, 110, 255)",
+                  padding: "1rem",
+                  borderRadius: "10px",
+                  background: "rgb(255, 255, 255, 0.5)",
                 }}
               >
-                <h4>BILL ID : {bill.billId}</h4>
-                <p>
-                  <span style={{ color: "rgb(0, 110, 255)" }}>
-                    {formatDateTime(bill.dateTime)}
-                  </span>{" "}
-                </p>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "end",
-                }}
-              >
-                <table>
-                  <tbody>
-                    <tr>
-                      <td>PATIENT NAME</td>
-                      <td> : </td>
-                      <td>{bill.patientResponse.name.toUpperCase()} </td>
-                    </tr>
-                    <tr>
-                      <td>PAYMENT MODE</td>
-                      <td> : </td>
-                      <td>{bill.paymentMode} </td>
-                    </tr>
-                    <tr>
-                      <td>PAID AMOUNT</td>
-                      <td> : </td>
-                      <td> ₹ {bill.totalPayableAmount} </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div>
-                  <Button
-                    variant="contained"
-                    style={{
-                      backgroundColor: "rgb(0, 110, 255)",
-                      width: "8rem",
-                      height: "2rem",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                    onClick={() => handlePrintBill(bill.billId)}
-                  >
-                    PRINT &nbsp;<i className="fa-solid fa-file-arrow-down"></i>
-                  </Button>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <h4>BILL ID : {bill.billId}</h4>
+                  <p>
+                    <span style={{ color: "rgb(0, 110, 255)" }}>
+                      {formatDateTime(bill.dateTime)}
+                    </span>{" "}
+                  </p>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "end",
+                  }}
+                >
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>PATIENT NAME</td>
+                        <td> : </td>
+                        <td>{bill.patientResponse.name.toUpperCase()} </td>
+                      </tr>
+                      <tr>
+                        <td>PAYMENT MODE</td>
+                        <td> : </td>
+                        <td>{bill.paymentMode} </td>
+                        <td>||</td>
+                        <td>PAID AMOUNT</td>
+                        <td> : </td>
+                        <td> ₹ {bill.totalPayableAmount} </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div>
+                    <Button
+                      variant="contained"
+                      style={{
+                        backgroundColor: "rgb(0, 110, 255)",
+                        width: "8rem",
+                        height: "2rem",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                      onClick={() => handlePrintBill(bill.billId)}
+                    >
+                      PRINT &nbsp;
+                      <i className="fa-solid fa-file-arrow-down"></i>
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
+        {/* Pagination Controls */}
+        <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem",justifyContent:"center" }}>
+          <Button
+            variant="contained"
+            disabled={currentPage === 1}
+            onClick={() => paginate(currentPage - 1)}
+          >
+            Previous
+          </Button>
+
+          {/* Page Numbers */}
+          {Array.from({ length: totalPages }, (_, i) => (
+            <Button
+              key={i + 1}
+              variant={currentPage === i + 1 ? "contained" : "outlined"}
+              onClick={() => paginate(i + 1)}
+            >
+              {i + 1}
+            </Button>
+          ))}
+
+          <Button
+            variant="contained"
+            disabled={currentPage === totalPages}
+            onClick={() => paginate(currentPage + 1)}
+          >
+            Next
+          </Button>
+        </div>
       </div>
 
       {/* Sticky Bar Container */}
       <div
         className="sticky-bar"
         style={{
-          flexBasis: "34%",
+          flexBasis: "38%",
           position: "sticky",
           top: "1rem",
           display: "flex",
@@ -317,12 +359,11 @@ function Transactions() {
             borderRadius: "10px",
             padding: "1rem",
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <h1>BILLS</h1>
+          <h2 className="headers" style={{color:"rgb(0, 110, 255)"}}>BILLS</h2>
           <div
             style={{
               display: "flex",
@@ -379,12 +420,11 @@ function Transactions() {
             borderRadius: "10px",
             padding: "1rem",
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <h1>SALES</h1>
+          <h2 className="headers" style={{color:"rgb(0, 110, 255)"}}>SALES</h2>
           <div
             style={{
               display: "flex",
@@ -442,12 +482,11 @@ function Transactions() {
             borderRadius: "10px",
             padding: "1rem",
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <h1>ADDITIONAL STATS</h1>
+          <h2 className="headers" style={{color:"rgb(0, 110, 255)"}}>ADDITIONAL STATS</h2>
           <div
             style={{
               display: "flex",

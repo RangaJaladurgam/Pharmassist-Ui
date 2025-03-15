@@ -190,3 +190,7 @@ th {
   background: rgba(0, 110, 255, 0.1);
 }
 
+.headers {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+}
