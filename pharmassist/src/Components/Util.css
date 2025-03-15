@@ -18,7 +18,7 @@
 
 .dashboard-container,
 .dashboard-lower-container {
-  height: 60vh;
+  height: 58vh;
   /* background-color: red; */
   display: flex;
   justify-content: center;
@@ -52,7 +52,8 @@
 }
 .medicine-table {
   flex-grow: 1;
-  overflow: auto;
+  padding-right:0.2rem;
+  overflow-y: auto;
 }
 .dashboard-right-container {
   width: 50%;
@@ -173,5 +174,19 @@ th {
   object-position: center;
   border-radius: 10px;
 
+}
+
+/* Custom Scrollbar Styling */
+.scroll-bar::-webkit-scrollbar {
+  width: 8px; /* Scrollbar width */
+}
+.scroll-bar::-webkit-scrollbar-thumb {
+  background: rgb(0, 110, 255); 
+  border-radius: 4px;
+}
+
+.scroll-bar::-webkit-scrollbar-track {
+  visibility: hidden;
+  background: rgba(0, 110, 255, 0.1);
 }
 

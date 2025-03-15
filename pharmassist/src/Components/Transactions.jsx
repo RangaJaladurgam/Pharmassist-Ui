@@ -77,19 +77,29 @@ function Transactions() {
     });
   };
 
+  const totalSales = parseFloat(
+    bills.reduce((sum, bill) => sum + bill.totalPayableAmount, 0)
+  ).toFixed(2);
   return (
     <div
       style={{
         margin: "1rem 4.5rem",
-        display: "flex"
+        display: "flex",
+        gap: "1rem",
+        position: "relative",
       }}
     >
+      {/* Bills Container */}
       <div
+      className="scroll-bar"
         style={{
           display: "flex",
           flexDirection: "column",
           gap: "0.5rem",
-          flexBasis:"70%"
+          flexBasis: "65%",
+          maxHeight: "80vh",
+          overflowY: "auto",
+          paddingRight: "1rem", 
         }}
       >
         {bills.map((bill) => (
@@ -100,9 +110,7 @@ function Transactions() {
               border: "1px dashed rgb(0, 110, 255)",
               padding: "1rem",
               borderRadius: "10px",
-              background: "rgb(255, 255, 255)",
-              background:
-                "linear-gradient(221deg, rgba(255,255,255,0.9) 0%, rgba(128,183,255,0.400) 74%, rgba(0,110,255,0.5) 100%)",
+              background: "rgb(255, 255, 255, 0.5)",
             }}
           >
             <div
@@ -164,12 +172,39 @@ function Transactions() {
           </div>
         ))}
       </div>
-      <div style={{flexBasis:"30%"}}>
-        
-
+  
+      {/* Sticky Bar Container */}
+      <div
+        className="sticky-bar"
+        style={{
+          flexBasis: "34%",
+          position: "sticky",
+          top: "1rem",
+          alignSelf: "flex-start",
+        }}
+      >
+        <div
+          style={{
+            height: "20rem",
+            background: "rgb(255, 255, 255, 0.5)",
+            border: "1px dashed rgb(0, 110, 255)",
+            borderRadius: "10px",
+            padding: "1rem",
+          }}
+        >
+          <div>
+            <h4>Total bills</h4>
+            <h1>{bills.length}</h1>
+          </div>
+          <div>
+            <h4>Total </h4>
+            <h1> ₹ {totalSales}</h1>
+          </div>
+        </div>
       </div>
     </div>
   );
+  
 }
 
 export default Transactions;

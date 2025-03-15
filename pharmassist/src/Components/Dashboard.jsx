@@ -282,7 +282,7 @@ function Dashboard() {
     >
       <div className="dashboard-container">
         <div className="dashboard-left-container">
-          <div className="left-inner">
+          <div className="left-inner scroll-bar">
             <div
               style={{
                 display: "flex",
@@ -312,12 +312,12 @@ function Dashboard() {
                 <i className="fa-solid fa-hospital"></i>
               </Button>
             </div>
-            <div className="medicine-table">
+            <div className="medicine-table scroll-bar">
               <table
                 style={{
                   width: "100%",
                   borderCollapse: "collapse",
-                  fontSize: "11px",
+                  fontSize: "11px"
                 }}
               >
                 <thead>
@@ -474,7 +474,7 @@ function Dashboard() {
               </Button>
             </div>
 
-            <div className="medicine-table">
+            <div className="medicine-table scroll-bar">
               <table
                 style={{
                   width: "100%",
