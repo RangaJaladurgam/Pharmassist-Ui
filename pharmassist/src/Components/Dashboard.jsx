@@ -267,10 +267,13 @@ function Dashboard() {
     } catch (error) {
       console.error("Error downloading PDF:", error);
     }
+  };
 
-};
-
-  
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(amount);
   return (
     <div
       style={{
@@ -317,7 +320,7 @@ function Dashboard() {
                 style={{
                   width: "100%",
                   borderCollapse: "collapse",
-                  fontSize: "11px"
+                  fontSize: "11px",
                 }}
               >
                 <thead>
@@ -340,7 +343,7 @@ function Dashboard() {
                         {medicine.name} {medicine.dosageInMg / 10}mg
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        ₹{parseFloat(medicine.price.toFixed(2))}
+                        {formatCurrency(parseFloat(medicine.price.toFixed(2)))}
                       </td>
                       <td style={{ textAlign: "center" }}>
                         <input
@@ -364,10 +367,10 @@ function Dashboard() {
                         />
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        ₹
-                        {parseFloat(
+                        
+                        {formatCurrency(parseFloat(
                           (medicine.price * medicine.quantity).toFixed(2)
-                        )}
+                        ))}
                       </td>
                       <td style={{ textAlign: "center" }}>
                         <Button
@@ -387,7 +390,7 @@ function Dashboard() {
                           textAlign: "center",
                           paddingBlock: "1rem",
                           fontSize: "14px",
-                          border:"none"
+                          border: "none",
                         }}
                       >
                         Empty Cart
@@ -439,7 +442,7 @@ function Dashboard() {
                     display: "flex",
                   }}
                 >
-                  Total : ₹{parseFloat(totalCartValue.toFixed(2))}
+                  Total : {formatCurrency(parseFloat(totalCartValue.toFixed(2)))}
                 </Button>
               )}
             </div>
@@ -498,7 +501,7 @@ function Dashboard() {
                       <td>
                         {medicine.name} {medicine.dosageInMg / 10}mg
                       </td>
-                      <td>₹{parseFloat(medicine.price.toFixed(2))}</td>
+                      <td>{formatCurrency(parseFloat(medicine.price.toFixed(2)))}</td>
                       <td>{medicine.stockQuantity}</td>
                       <td>
                         <Button
@@ -518,7 +521,11 @@ function Dashboard() {
                     <tr>
                       <td
                         colSpan="5"
-                        style={{ textAlign: "center", paddingBlock: "1rem",border:"none" }}
+                        style={{
+                          textAlign: "center",
+                          paddingBlock: "1rem",
+                          border: "none",
+                        }}
                       >
                         No Medicines Found
                       </td>
@@ -669,27 +676,27 @@ function Dashboard() {
                   <tr>
                     <td>TOTAL PRICE</td>
                     <td> : </td>
-                    <td>₹{parseFloat(totalCartValue.toFixed(2))}</td>
+                    <td>{formatCurrency(parseFloat(totalCartValue.toFixed(2)))}</td>
                   </tr>
                   <tr>
                     <td>GST (18%)</td>
                     <td>:</td>
                     <td>
-                      ₹
-                      {parseFloat(
+                      
+                      {formatCurrency(parseFloat(
                         (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
-                      ).toFixed(2)}
+                      ).toFixed(2))}
                     </td>
                   </tr>
                   <tr>
                     <td>PAYABLE AMOUNT</td>
                     <td>:</td>
                     <td>
-                      ₹
-                      {parseFloat(
+                      
+                      {formatCurrency(parseFloat(
                         totalCartValue +
                           (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
-                      ).toFixed(2)}
+                      ).toFixed(2))}
                     </td>
                   </tr>
                 </tbody>
@@ -732,7 +739,7 @@ function Dashboard() {
             style={{
               display: "flex",
               gap: "0.5rem",
-              flexDirection:"column",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -753,7 +760,7 @@ function Dashboard() {
               <MenuItem value="CARD">CARD</MenuItem>
               <MenuItem value="UPI">UPI</MenuItem>
             </TextField>
-            { paymentMode === "" && (
+            {paymentMode === "" && (
               <div
                 className="payment-upi"
                 style={{
@@ -769,7 +776,6 @@ function Dashboard() {
             )}
           </div>
           <div>
-            
             {paymentMode === "CASH" && (
               <div
                 className="payment-cash"

@@ -52,7 +52,7 @@
 }
 .medicine-table {
   flex-grow: 1;
-  padding-right:0.2rem;
+  padding-right: 0.2rem;
   overflow-y: auto;
 }
 .dashboard-right-container {
@@ -114,7 +114,7 @@ th {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: rgb(255,255,255);
+  background: rgb(255, 255, 255);
 }
 
 .horizontal-text {
@@ -173,7 +173,6 @@ th {
   object-fit: cover;
   object-position: center;
   border-radius: 10px;
-
 }
 
 /* Custom Scrollbar Styling */
@@ -181,7 +180,7 @@ th {
   width: 8px; /* Scrollbar width */
 }
 .scroll-bar::-webkit-scrollbar-thumb {
-  background: rgb(0, 110, 255); 
+  background: rgb(0, 110, 255);
   border-radius: 4px;
 }
 
@@ -193,4 +192,10 @@ th {
 .headers {
   writing-mode: vertical-lr;
   transform: rotate(180deg);
+  color: rgb(0, 110, 255);
+}
+
+.box {
+
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 19px 38px, rgba(0, 0, 0, 0.2) 0px 15px 12px;
 }

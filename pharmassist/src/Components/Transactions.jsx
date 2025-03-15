@@ -156,11 +156,10 @@ function Transactions() {
     const date = new Date(isoString);
     return date.toLocaleString("en-IN", {
       day: "2-digit",
-      month: "long",
+      month: "short",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-      second: "2-digit",
       hour12: true,
     });
   };
@@ -217,20 +216,27 @@ function Transactions() {
       style={{
         margin: "1rem 4.5rem",
         display: "flex",
-        gap: "1rem"
+        gap: "1rem",
+        paddingBottom: "2rem",
       }}
     >
+      <div style={{ flexBasis: "3%", display: "flex", alignItems: "center" }}>
+        <h2 className="headers">TRANSACTION HISTORY</h2>
+      </div>
       {/* Bills Container */}
-      <div style={{
-        display:"flex",
-        flexDirection:"column"
-      }}>
+      <div
+        style={{
+          display: "flex",
+          flexBasis: "62%",
+          flexDirection: "column",
+          justifyContent:"space-between"
+        }}
+      >
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "1rem",
-            flexBasis: "65%",
+            gap: "0.5rem",
           }}
         >
           {loading ? (
@@ -310,34 +316,45 @@ function Transactions() {
           )}
         </div>
         {/* Pagination Controls */}
-        <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem",justifyContent:"center" }}>
-          <Button
-            variant="contained"
-            disabled={currentPage === 1}
-            onClick={() => paginate(currentPage - 1)}
+        {bills.length !== 0 ? (
+          <div
+            style={{
+              marginTop: "1rem",
+              display: "flex",
+              gap: "0.5rem",
+              justifyContent: "center",
+            }}
           >
-            Previous
-          </Button>
-
-          {/* Page Numbers */}
-          {Array.from({ length: totalPages }, (_, i) => (
             <Button
-              key={i + 1}
-              variant={currentPage === i + 1 ? "contained" : "outlined"}
-              onClick={() => paginate(i + 1)}
+              variant="contained"
+              disabled={currentPage === 1}
+              onClick={() => paginate(currentPage - 1)}
             >
-              {i + 1}
+              Previous
             </Button>
-          ))}
 
-          <Button
-            variant="contained"
-            disabled={currentPage === totalPages}
-            onClick={() => paginate(currentPage + 1)}
-          >
-            Next
-          </Button>
-        </div>
+            {/* Page Numbers */}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <Button
+                key={i + 1}
+                variant={currentPage === i + 1 ? "contained" : "outlined"}
+                onClick={() => paginate(i + 1)}
+              >
+                {i + 1}
+              </Button>
+            ))}
+
+            <Button
+              variant="contained"
+              disabled={currentPage === totalPages}
+              onClick={() => paginate(currentPage + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
 
       {/* Sticky Bar Container */}
@@ -345,14 +362,13 @@ function Transactions() {
         className="sticky-bar"
         style={{
           flexBasis: "38%",
-          position: "sticky",
-          top: "1rem",
           display: "flex",
           flexDirection: "column",
           gap: "1rem",
         }}
       >
         <div
+          className="box"
           style={{
             background: "rgb(255, 255, 255, 0.5)",
             border: "1px dashed rgb(0, 110, 255)",
@@ -363,11 +379,11 @@ function Transactions() {
             justifyContent: "space-between",
           }}
         >
-          <h2 className="headers" style={{color:"rgb(0, 110, 255)"}}>BILLS</h2>
+          <h2 className="headers">BILLS</h2>
           <div
             style={{
               display: "flex",
-              gap: "2rem",
+              gap: "1rem",
               justifyContent: "center",
             }}
           >
@@ -414,6 +430,7 @@ function Transactions() {
           </div>
         </div>
         <div
+          className="box"
           style={{
             background: "rgb(255, 255, 255, 0.5)",
             border: "1px dashed rgb(0, 110, 255)",
@@ -424,7 +441,7 @@ function Transactions() {
             justifyContent: "space-between",
           }}
         >
-          <h2 className="headers" style={{color:"rgb(0, 110, 255)"}}>SALES</h2>
+          <h2 className="headers">SALES</h2>
           <div
             style={{
               display: "flex",
@@ -476,6 +493,7 @@ function Transactions() {
           </div>
         </div>
         <div
+          className="box"
           style={{
             background: "rgb(255, 255, 255, 0.5)",
             border: "1px dashed rgb(0, 110, 255)",
@@ -486,7 +504,7 @@ function Transactions() {
             justifyContent: "space-between",
           }}
         >
-          <h2 className="headers" style={{color:"rgb(0, 110, 255)"}}>ADDITIONAL STATS</h2>
+          <h2 className="headers">ADDITIONAL STATS</h2>
           <div
             style={{
               display: "flex",
