@@ -72,6 +72,7 @@ function DashMenu() {
               if (item === "Upload Medicines") setShowUploadForm(true); // Open the floating form
               if (item === "My Pharmacy") navigate("/show-pharmacy");
               if(item === "Dashboard | My Pharma") navigate("/dasboard");
+              if(item === "Transactions") navigate("/transactions");
             }}
           >
             <Button style={item !== "Link Pharmacy" ? {color:"white"} :{color:"red"}}>{item}</Button>
