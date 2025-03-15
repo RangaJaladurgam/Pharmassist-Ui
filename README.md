@@ -1,4 +1,4 @@
-# Pharmassist-Ui# Pharmassist-Ui
+# Pharmassist-App (v1.0.0)
 
 ## Overview
 **Pharmassist-Ui** is a desktop-focused user interface for managing pharmacy operations efficiently. This UI is built using React and provides essential functionalities like adding products, billing, and stock management.
