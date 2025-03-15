@@ -1,42 +1,68 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.container {
+  background-color: rgba(255, 255, 255, 0.494);
+  width: 100%;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.banner {
+  height: 40vh;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.banner div img {
+  height: 40vh;
+  object-position: center;
+  object-fit: cover;
+}
+
+.hero-section {
+  /* background-color: red; */
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-inline: 2rem;
+}
+
+.hero {
+  flex-basis: 33%;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px,
+    rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  /* background-color: red !important; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero:nth-of-type(even) {
+  animation: bounce 2s 0.5s infinite linear;
+}
+.hero:nth-of-type(odd) {
+  animation: bounce-reverse 2s 0.5s infinite linear;
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1);
   }
-  to {
-    transform: rotate(360deg);
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
   }
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@keyframes bounce-reverse {
+  0% {
+    transform: scale(1.02);
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.02);
+  }
 }
