@@ -1,34 +1,119 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
+import { textAlign } from "@mui/system";
 
 function Transactions() {
   const [bills, setBills] = useState([]);
   const [billPrinted, setBillPrinted] = useState(false);
+  const [totalSales, setTotalSales] = useState(0);
+  const [monthlySales, setMonthlySales] = useState(0);
+  const [todaySales, setTodaySales] = useState(0);
+  const [yesterdaySales, setYesterdaySales] = useState(0);
+
+  const [totalBills, setTotalBills] = useState(0);
+  const [monthlyBills, setMonthlyBills] = useState(0);
+  const [todayBills, setTodayBills] = useState(0);
+  const [yesterdayBills, setYesterdayBills] = useState(0);
 
   useEffect(() => {
-    const handleFindAllBills = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const response = await axios.get(
-          "http://localhost:7000/pharmacy/bills/find-all",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            validateStatus: (status) => status === 200 || status === 302,
-          }
-        );
+    const calculateStats = () => {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const currentYear = currentDate.getFullYear();
 
-        // Sort bills in descending order based on `dateTime`
-        const sortedBills = response.data.data.sort(
-          (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
-        );
+      // Get start of today and yesterday
+      const todayStart = new Date(currentDate.setHours(0, 0, 0, 0));
+      const yesterdayStart = new Date(todayStart);
+      yesterdayStart.setDate(yesterdayStart.getDate() - 1);
 
-        setBills(sortedBills);
-      } catch (error) {
-        console.log(error);
-        setBills([]);
-      }
+      // 🔹 Total Sales (All time)
+      const total = bills.reduce(
+        (sum, bill) => sum + bill.totalPayableAmount,
+        0
+      );
+
+      // 🔹 Total Bills (All time)
+      const totalBillCount = bills.length;
+
+      // 🔹 Monthly Sales & Bills
+      const monthlyBillsList = bills.filter((bill) => {
+        const billDate = new Date(bill.dateTime);
+        return (
+          billDate.getMonth() === currentMonth &&
+          billDate.getFullYear() === currentYear
+        );
+      });
+      const monthlyTotal = monthlyBillsList.reduce(
+        (sum, bill) => sum + bill.totalPayableAmount,
+        0
+      );
+
+      // 🔹 Today's Sales & Bills
+      const todayBillsList = bills.filter(
+        (bill) => new Date(bill.dateTime) >= todayStart
+      );
+      const todayTotal = todayBillsList.reduce(
+        (sum, bill) => sum + bill.totalPayableAmount,
+        0
+      );
+
+      // 🔹 Yesterday's Sales & Bills
+      const yesterdayBillsList = bills.filter((bill) => {
+        const billDate = new Date(bill.dateTime);
+        return billDate >= yesterdayStart && billDate < todayStart;
+      });
+      const yesterdayTotal = yesterdayBillsList.reduce(
+        (sum, bill) => sum + bill.totalPayableAmount,
+        0
+      );
+
+      // ✅ Update states
+      setTotalSales(total.toFixed(2));
+      setMonthlySales(monthlyTotal.toFixed(2));
+      setTodaySales(todayTotal.toFixed(2));
+      setYesterdaySales(yesterdayTotal.toFixed(2));
+
+      setTotalBills(totalBillCount);
+      setMonthlyBills(monthlyBillsList.length);
+      setTodayBills(todayBillsList.length);
+      setYesterdayBills(yesterdayBillsList.length);
     };
+
+    calculateStats();
+  }, [bills]); // Runs when `bills` change
+
+  const [loading, setLoading] = useState(true);
+
+  const handleFindAllBills = async () => {
+    const token = localStorage.getItem("token");
+    setLoading(true);
+
+    try {
+      const response = await axios.get(
+        "http://localhost:7000/pharmacy/bills/find-all",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          validateStatus: (status) => status === 200 || status === 302,
+        }
+      );
+
+      const sortedBills = response.data?.data
+        ? response.data.data.sort(
+            (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
+          )
+        : [];
+
+      setBills(sortedBills);
+    } catch (error) {
+      console.error("Error fetching bills:", error);
+      setBills([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     handleFindAllBills();
   }, []);
 
@@ -77,9 +162,43 @@ function Transactions() {
     });
   };
 
-  const totalSales = parseFloat(
-    bills.reduce((sum, bill) => sum + bill.totalPayableAmount, 0)
-  ).toFixed(2);
+  const avgSalesPerBill =
+    totalBills > 0 ? (totalSales / totalBills).toFixed(2) : 0;
+  const highestBill =
+    bills.length > 0
+      ? Math.max(...bills.map((bill) => bill.totalPayableAmount))
+      : 0;
+  const lowestBill =
+    bills.length > 0
+      ? Math.min(...bills.map((bill) => bill.totalPayableAmount))
+      : 0;
+  const paymentModes = {};
+  bills.forEach((bill) => {
+    paymentModes[bill.paymentMode] = (paymentModes[bill.paymentMode] || 0) + 1;
+  });
+  const mostUsedPaymentMode = Object.entries(paymentModes).reduce(
+    (a, b) => (b[1] > a[1] ? b : a),
+    ["", 0]
+  )[0];
+  const patientCount = {};
+  bills.forEach((bill) => {
+    patientCount[bill.patientResponse.name] =
+      (patientCount[bill.patientResponse.name] || 0) + 1;
+  });
+  const mostFrequentPatient = Object.entries(patientCount).reduce(
+    (a, b) => (b[1] > a[1] ? b : a),
+    ["", 0]
+  )[0];
+  const salesGrowth =
+    yesterdaySales > 0
+      ? (((todaySales - yesterdaySales) / yesterdaySales) * 100).toFixed(2)
+      : "N/A";
+
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(amount);
   return (
     <div
       style={{
@@ -91,7 +210,7 @@ function Transactions() {
     >
       {/* Bills Container */}
       <div
-      className="scroll-bar"
+        className="scroll-bar"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -99,80 +218,86 @@ function Transactions() {
           flexBasis: "65%",
           maxHeight: "80vh",
           overflowY: "auto",
-          paddingRight: "1rem", 
+          paddingRight: "1rem",
         }}
       >
-        {bills.map((bill) => (
-          <div
-            key={bill.billId}
-            style={{
-              width: "100%",
-              border: "1px dashed rgb(0, 110, 255)",
-              padding: "1rem",
-              borderRadius: "10px",
-              background: "rgb(255, 255, 255, 0.5)",
-            }}
-          >
+        {loading ? (
+          <p style={{textAlign:"center"}}>Loading bills...</p>
+        ) : bills.length === 0 ? (
+          <p style={{textAlign:"center"}}>No transactions found.</p>
+        ) : (
+          bills.map((bill) => (
             <div
+              key={bill.billId}
               style={{
-                display: "flex",
-                justifyContent: "space-between",
+                width: "100%",
+                border: "1px dashed rgb(0, 110, 255)",
+                padding: "1rem",
+                borderRadius: "10px",
+                background: "rgb(255, 255, 255, 0.5)",
               }}
             >
-              <h4>BILL ID : {bill.billId}</h4>
-              <p>
-                <span style={{ color: "rgb(0, 110, 255)" }}>
-                  {formatDateTime(bill.dateTime)}
-                </span>{" "}
-              </p>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "end",
-              }}
-            >
-              <table>
-                <tbody>
-                  <tr>
-                    <td>PATIENT NAME</td>
-                    <td> : </td>
-                    <td>{bill.patientResponse.name.toUpperCase()} </td>
-                  </tr>
-                  <tr>
-                    <td>PAYMENT MODE</td>
-                    <td> : </td>
-                    <td>{bill.paymentMode} </td>
-                  </tr>
-                  <tr>
-                    <td>PAID AMOUNT</td>
-                    <td> : </td>
-                    <td> ₹ {bill.totalPayableAmount} </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div>
-                <Button
-                  variant="contained"
-                  style={{
-                    backgroundColor: "rgb(0, 110, 255)",
-                    width: "8rem",
-                    height: "2rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                  onClick={() => handlePrintBill(bill.billId)}
-                >
-                  PRINT &nbsp;<i className="fa-solid fa-file-arrow-down"></i>
-                </Button>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <h4>BILL ID : {bill.billId}</h4>
+                <p>
+                  <span style={{ color: "rgb(0, 110, 255)" }}>
+                    {formatDateTime(bill.dateTime)}
+                  </span>{" "}
+                </p>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "end",
+                }}
+              >
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>PATIENT NAME</td>
+                      <td> : </td>
+                      <td>{bill.patientResponse.name.toUpperCase()} </td>
+                    </tr>
+                    <tr>
+                      <td>PAYMENT MODE</td>
+                      <td> : </td>
+                      <td>{bill.paymentMode} </td>
+                    </tr>
+                    <tr>
+                      <td>PAID AMOUNT</td>
+                      <td> : </td>
+                      <td> ₹ {bill.totalPayableAmount} </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div>
+                  <Button
+                    variant="contained"
+                    style={{
+                      backgroundColor: "rgb(0, 110, 255)",
+                      width: "8rem",
+                      height: "2rem",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                    onClick={() => handlePrintBill(bill.billId)}
+                  >
+                    PRINT &nbsp;<i className="fa-solid fa-file-arrow-down"></i>
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
-  
+
       {/* Sticky Bar Container */}
       <div
         className="sticky-bar"
@@ -180,31 +305,222 @@ function Transactions() {
           flexBasis: "34%",
           position: "sticky",
           top: "1rem",
-          alignSelf: "flex-start",
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
         }}
       >
         <div
           style={{
-            height: "20rem",
             background: "rgb(255, 255, 255, 0.5)",
             border: "1px dashed rgb(0, 110, 255)",
             borderRadius: "10px",
             padding: "1rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <div>
-            <h4>Total bills</h4>
-            <h1>{bills.length}</h1>
+          <h1>BILLS</h1>
+          <div
+            style={{
+              display: "flex",
+              gap: "2rem",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Total</h4>
+              <h2>{totalBills}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>This Month</h4>
+              <h2>{monthlyBills}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Yesterday </h4>
+              <h2>{yesterdayBills}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Today </h4>
+              <h2>{todayBills}</h2>
+            </div>
           </div>
-          <div>
-            <h4>Total </h4>
-            <h1> ₹ {totalSales}</h1>
+        </div>
+        <div
+          style={{
+            background: "rgb(255, 255, 255, 0.5)",
+            border: "1px dashed rgb(0, 110, 255)",
+            borderRadius: "10px",
+            padding: "1rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <h1>SALES</h1>
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem 2rem",
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Over All Sales</h4>
+              <h2> {formatCurrency(totalSales)}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>This Month</h4>
+              <h2>{formatCurrency(monthlySales)}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Yesterday </h4>
+              <h2>{formatCurrency(yesterdaySales)}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Today </h4>
+              <h2>{formatCurrency(todaySales)}</h2>
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
+            background: "rgb(255, 255, 255, 0.5)",
+            border: "1px dashed rgb(0, 110, 255)",
+            borderRadius: "10px",
+            padding: "1rem",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <h1>ADDITIONAL STATS</h1>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: "1rem 2rem",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Avg Sales per Bill</h4>
+              <h2>{formatCurrency(avgSalesPerBill)}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Highest Bill</h4>
+              <h2>{formatCurrency(highestBill)}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Lowest Bill</h4>
+              <h2>{formatCurrency(parseFloat(lowestBill).toFixed(2))}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Most Used Payment</h4>
+              <h2>{mostUsedPaymentMode}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Top Customer</h4>
+              <h2>{mostFrequentPatient}</h2>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <h4>Sales Growth</h4>
+              <h2>{salesGrowth} %</h2>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-  
 }
 
 export default Transactions;
