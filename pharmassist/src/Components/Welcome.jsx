@@ -8,8 +8,8 @@ import Image3 from "../assets/Picsart_25-03-14_18-26-37-030.jpg";
 import Image2 from "../assets/pexels-pixabay-40568.jpg";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import NavBar from "./NavBar";
 import LogoCarousel from "./LogoCarousel";
+import Logo from "../assets/pharmassist-horizontal-logo-bg.png";
 
 export default function Welcome() {
   const [pharmacies] = useState([
@@ -133,7 +133,7 @@ export default function Welcome() {
       {/* Image Carousel */}
       <div
         style={{
-          padding: "2rem",
+          padding: "1.5rem 2rem",
           textAlign: "center",
           borderRadius: "10px",
         }}
@@ -158,16 +158,19 @@ export default function Welcome() {
         </Carousel>
       </div>
       <div>
-        <LogoCarousel/>
+        <LogoCarousel />
       </div>
       <div className="hero-section">
         {/* Additional Information Section */}
         <div
-          className="hero"
+          className="hero hero1"
           style={{
             padding: "2rem",
             textAlign: "center",
-            backgroundColor: "rgba(67, 180, 255, 0.459)",
+            backgroundColor: "rgba(67, 180, 255, 0.300)",
+            border: "2px solid rgba(67, 180, 255, 0.500)",
+            boxShadow:
+              "rgba(0, 0, 0, 0.1) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.0) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
           }}
         >
           <h3 style={{ color: "#0277bd" }}>Our Services</h3>
@@ -188,10 +191,14 @@ export default function Welcome() {
           style={{
             textAlign: "center",
             padding: "2rem 1rem",
-            backgroundColor: "white",
+            backgroundColor: "rgba(255, 255, 255, 0.300)",
+            border: "2px solid rgba(255, 255, 255, 0)",
+            boxShadow:
+              "rgba(0, 0, 0, 0.1) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.0) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
           }}
         >
-          <h2 style={{ color: "#333" }}>Welcome to PharmAssist</h2>
+          {/* <h2 style={{ color: "#333" }}>PharmAssist</h2> */}
+          <img src={Logo} alt="" style={{width:"200px"}}/>
           <p
             style={{
               fontSize: "18px",
@@ -220,7 +227,10 @@ export default function Welcome() {
           style={{
             padding: "2rem",
             textAlign: "center",
-            backgroundColor: "rgba(243, 167, 27, 0.645)",
+            backgroundColor: "rgba(243, 167, 27, 0.300)",
+            border: "2px solid rgba(243, 167, 27, 0.500)",
+            boxShadow:
+              "rgba(0, 0, 0, 0.1) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.0) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px",
           }}
         >
           <h3 style={{ color: "#bf360c" }}>What Our Users Say</h3>

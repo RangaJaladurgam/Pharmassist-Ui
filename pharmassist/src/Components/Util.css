@@ -129,14 +129,14 @@ th {
   background-color: green !important;
   transform: scale(1.1);
 }
-
 .logo-carousel {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   overflow: hidden;
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .logo-row {
@@ -144,20 +144,33 @@ th {
   overflow: hidden;
   white-space: nowrap;
   height: 100%;
-  /* background-color: red; */
-  mix-blend-mode:multiply;
+  mix-blend-mode: multiply;
 }
 
 .logo-track {
   display: flex;
-  gap: 30px;
+  gap: 10px;
+}
+
+/* Add transparent fade effect on both sides */
+.logo-carousel::before,
+.logo-carousel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100px; /* Adjust width as needed */
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .logo {
-  width: 150px;  /* Adjust size as needed */
+  width: 150px; /* Adjust size as needed */
   height: 90px;
-  background:transparent;
+  background: transparent;
   object-fit: cover;
   object-position: center;
   border-radius: 10px;
+
 }
+
