@@ -16,6 +16,11 @@
   gap: 1rem;
 }
 
+.menu-items{
+  list-style: none;
+}
+
+
 .dashboard-container,
 .dashboard-lower-container {
   height: 58vh;
@@ -80,12 +85,12 @@ th {
 }
 
 .right-inner tr:nth-of-type(even),
-.right-inner th {
+.right-inner th,.patient-table tr:nth-of-type(even){
   background-color: rgba(67, 180, 255, 0.459);
 }
 .left-inner tr:nth-of-type(even),
 .left-inner th,
-.left-inner td input[type="tel"]:nth-last-of-type(even) {
+.left-inner td input[type="tel"]:nth-last-of-type(even),.patient-table th {
   background-color: rgba(243, 167, 27, 0.645);
 }
 .dashboard-lower-container {
@@ -198,4 +203,18 @@ th {
 .box {
 
   box-shadow: rgba(0, 0, 0, 0.1) 0px 19px 38px, rgba(0, 0, 0, 0.2) 0px 15px 12px;
+}
+
+.patient-table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.patient-table th {
+  text-transform: uppercase;
+}
+
+.patient-table,.patient-table th,.patient-table td{
+  padding: 0.5rem 1rem;
+  border: 1px dashed rgb(0, 110, 255);
 }

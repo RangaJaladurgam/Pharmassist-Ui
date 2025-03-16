@@ -17,6 +17,7 @@ import DashMenu from "./Components/DashMenu";
 import FloatingForm from "./Components/FloatingForm ";
 import AdminProfile from "./Components/AdminProfile";
 import Transactions from "./Components/Transactions";
+import Patients from "./Components/Patients";
 
 const EXPIRY_TIME = 60 * 60 * 1000; // 1 hour
 
@@ -66,6 +67,7 @@ function App({ isLoggedIn, setIsLoggedIn, handleLogout }) {
           <Route path="/link-pharmacy" element={<FloatingForm />} />
           <Route path="/admin/profile" element={<AdminProfile/>} />
           <Route path="/transactions" element={<Transactions/>} />
+          <Route path="/patients" element={<Patients/>} />
         </Route>
 
         {/* Redirect unknown routes to login */}

@@ -28,10 +28,18 @@ function Login({ setIsLoggedIn }) {
       },{
         validateStatus : (status) => status === 200 || status === 401
       });
+      console.log(response.data);
 
       if (response.status === 200) {
         console.log("Login successful:", response.data);
         localStorage.setItem("token", response.data.token);
+        
+        
+        const admin = await axios.get("http://localhost:7000/admins/profile",{
+          headers: { Authorization : `Bearer ${response.data.token}`},
+          validateStatus: (status) => status === 200 || status === 302
+        }) 
+
         setIsLoggedIn(true);
         navigate("/dashboard");
       } else if (response.status === 401) {
