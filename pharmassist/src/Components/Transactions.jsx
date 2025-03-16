@@ -83,6 +83,8 @@ function Transactions() {
       setYesterdayBills(yesterdayBillsList.length);
     };
 
+
+
     calculateStats();
   }, [bills]); // Runs when `bills` change
 
@@ -191,6 +193,11 @@ function Transactions() {
     (a, b) => (b[1] > a[1] ? b : a),
     ["", 0]
   )[0];
+
+  useEffect(()=>{
+      localStorage.setItem("mostFrequentPatient",mostFrequentPatient);
+  },[mostFrequentPatient]);
+
   const salesGrowth =
     yesterdaySales > 0
       ? (((todaySales - yesterdaySales) / yesterdaySales) * 100).toFixed(2)
@@ -229,7 +236,7 @@ function Transactions() {
           display: "flex",
           flexBasis: "62%",
           flexDirection: "column",
-          justifyContent:"space-between"
+          justifyContent: "space-between",
         }}
       >
         <div

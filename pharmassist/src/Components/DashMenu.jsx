@@ -73,6 +73,7 @@ function DashMenu() {
               if (item === "My Pharmacy") navigate("/show-pharmacy");
               if(item === "Dashboard | My Pharma") navigate("/dasboard");
               if(item === "Transactions") navigate("/transactions");
+              if(item === "Patients") navigate("/patients");
             }}
           >
             <Button style={item !== "Link Pharmacy" ? {color:"white"} :{color:"red"}}>{item}</Button>
