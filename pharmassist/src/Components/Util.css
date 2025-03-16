@@ -16,6 +16,11 @@
   gap: 1rem;
 }
 
+.menu-items{
+  list-style: none;
+}
+
+
 .dashboard-container,
 .dashboard-lower-container {
   height: 58vh;

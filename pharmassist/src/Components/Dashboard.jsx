@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button, MenuItem, TextField } from "@mui/material";
 import axios from "axios";
@@ -17,6 +17,7 @@ function Dashboard() {
   const [custPhoneNumber, setCustPhoneNumber] = useState("");
   const [patientFound, setPatientFound] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [showPharmacyForm, setShowPharmacyForm] = useState(false);
   const [customer, setCustomer] = useState({
     name: "",
     phoneNumber: "",
@@ -30,6 +31,7 @@ function Dashboard() {
   const [paymentDone, setPaymentDone] = useState(false);
   const [billCompleted, setBillCompleted] = useState(false);
   const [billPrinted, setBillPrinted] = useState(false);
+  const [isPharmacyPresent, setIsPharmacyPresent] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -37,6 +39,30 @@ function Dashboard() {
       navigate("/login");
     }
   }, [navigate]);
+
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const adminResponse = await axios.get(
+          "http://localhost:7000/admins/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            validateStatus: (status) => status == 200 || 302
+          }
+        );
+
+        localStorage.setItem("admin", JSON.stringify(adminResponse.data.data));
+        setIsPharmacyPresent(!!adminResponse.data.data.pharmacyResponse);
+      } catch (error) {
+        console.error("Error fetching admin data:", error);
+      }
+    };
+
+    fetchAdminData();
+  }, []);
 
   useEffect(() => {
     const fetchMedicine = async () => {
@@ -56,7 +82,6 @@ function Dashboard() {
         );
 
         setMedicines(filteredMedicines);
-        console.log(filteredMedicines.length);
       } catch (err) {
         console.error("Error fetching medicine:", err);
       }
@@ -139,6 +164,7 @@ function Dashboard() {
   };
 
   const handleSearchPatient = async (e) => {
+    if (!isPharmacyPresent) return;
     e.preventDefault();
     setSearched(true);
     const token = localStorage.getItem("token");
@@ -274,7 +300,36 @@ function Dashboard() {
       style: "currency",
       currency: "INR",
     }).format(amount);
-  return (
+
+  return !isPharmacyPresent ? (
+    <div
+      style={{
+        height: "80vh",
+        padding: "0.5rem 4rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "0.5rem",
+      }}
+    >
+      <>
+        <h1>Pharmacy Is Not Linked Yet...</h1>
+        <p>
+          Click on{" "}
+          <span
+            style={{
+              color: "red",
+              textDecoration: "underline",
+            }}
+          >
+            Link Pharmacy
+          </span>{" "}
+          on the DashMenu
+        </p>
+      </>
+    </div>
+  ) : (
     <div
       style={{
         padding: "0.5rem 4rem",
@@ -367,10 +422,11 @@ function Dashboard() {
                         />
                       </td>
                       <td style={{ textAlign: "center" }}>
-                        
-                        {formatCurrency(parseFloat(
-                          (medicine.price * medicine.quantity).toFixed(2)
-                        ))}
+                        {formatCurrency(
+                          parseFloat(
+                            (medicine.price * medicine.quantity).toFixed(2)
+                          )
+                        )}
                       </td>
                       <td style={{ textAlign: "center" }}>
                         <Button
@@ -442,7 +498,8 @@ function Dashboard() {
                     display: "flex",
                   }}
                 >
-                  Total : {formatCurrency(parseFloat(totalCartValue.toFixed(2)))}
+                  Total :{" "}
+                  {formatCurrency(parseFloat(totalCartValue.toFixed(2)))}
                 </Button>
               )}
             </div>
@@ -501,7 +558,9 @@ function Dashboard() {
                       <td>
                         {medicine.name} {medicine.dosageInMg / 10}mg
                       </td>
-                      <td>{formatCurrency(parseFloat(medicine.price.toFixed(2)))}</td>
+                      <td>
+                        {formatCurrency(parseFloat(medicine.price.toFixed(2)))}
+                      </td>
                       <td>{medicine.stockQuantity}</td>
                       <td>
                         <Button
@@ -676,27 +735,31 @@ function Dashboard() {
                   <tr>
                     <td>TOTAL PRICE</td>
                     <td> : </td>
-                    <td>{formatCurrency(parseFloat(totalCartValue.toFixed(2)))}</td>
+                    <td>
+                      {formatCurrency(parseFloat(totalCartValue.toFixed(2)))}
+                    </td>
                   </tr>
                   <tr>
                     <td>GST (18%)</td>
                     <td>:</td>
                     <td>
-                      
-                      {formatCurrency(parseFloat(
-                        (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
-                      ).toFixed(2))}
+                      {formatCurrency(
+                        parseFloat(
+                          (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
+                        ).toFixed(2)
+                      )}
                     </td>
                   </tr>
                   <tr>
                     <td>PAYABLE AMOUNT</td>
                     <td>:</td>
                     <td>
-                      
-                      {formatCurrency(parseFloat(
-                        totalCartValue +
-                          (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
-                      ).toFixed(2))}
+                      {formatCurrency(
+                        parseFloat(
+                          totalCartValue +
+                            (parseFloat(totalCartValue.toFixed(2)) / 100) * 18.0
+                        ).toFixed(2)
+                      )}
                     </td>
                   </tr>
                 </tbody>
@@ -962,6 +1025,13 @@ function Dashboard() {
           closeForm={() => setShowForm(false)}
         />
       )}
+      {showPharmacyForm && (
+        <FloatingForm
+          showForm={showPharmacyForm}
+          setShowForm={setShowPharmacyForm}
+        />
+      )}
+
       {/* Floating Upload Form */}
       {showUploadForm && (
         <FloatingUploadForm onClose={() => setShowUploadForm(false)} />
