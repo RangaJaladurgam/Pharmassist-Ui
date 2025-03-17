@@ -34,10 +34,10 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "white", paddingInline: "3rem", minHeight: "2.5rem" }}>
+    <AppBar position="static" sx={{ backgroundColor: "white", padding: "0.5rem 3rem", minHeight: "2.5rem" }}>
   <Toolbar sx={{ minHeight: "2.5rem", paddingY: "2px" }}>
-        <Typography variant="h6" sx={{ flexGrow: 1 }} style={{display:"flex"}}>
-          <img src={Logo1} alt="" style={{width:"200px"}}/>
+        <Typography variant="h6" sx={{ flexGrow: 1 }} style={{display:"flex",cursor:"pointer"}}>
+          <img src={Logo1} alt="" style={{width:"200px"}} onClick={()=>navigate("/")}/>
         </Typography>
 
         {isLoggedIn ? (

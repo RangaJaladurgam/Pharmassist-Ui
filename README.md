@@ -1,4 +1,4 @@
-# Pharmassist-App (v1.0.0)
+# Pharmassist-App (v1.1.0)
 
 ## Overview
 **Pharmassist-Ui** is a desktop-focused user interface for managing pharmacy operations efficiently. This UI is built using React and provides essential functionalities like adding products, billing, and stock management.
@@ -39,9 +39,19 @@ npm run build
 ```
 This will generate optimized files in the `dist` folder, ready for deployment.
 
+
+## Changelog
+### v1.1.0 (Latest Release)
+**New Features Added:**
+- Added Transactions to view all the bills and stats about bills
+**Validation Fixes & Bug Resolutions:**
+- Fixed Validations for Login and Register Page
+
+
 ## Versioning
 The project follows **semantic versioning**:
 - **v1.0.0**: Initial stable release with full pharmacy management features.
+- **v1.1.0**: New features added, validation fixes, and bug resolutions.
 
 ## Contribution
 Feel free to contribute by creating issues or submitting pull requests.
