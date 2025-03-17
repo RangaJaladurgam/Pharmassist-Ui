@@ -160,7 +160,7 @@ function Register() {
           helperText={phoneError} 
           fullWidth
         />
-        <div style={{ display: "flex", width: "100%",gap:"0.2rem" }}>
+        <div style={{ display: "flex", width: "100%", gap: "0.2rem" }}>
           <TextField
             label="Password"
             type={showPassword ? "text" : "password"}
@@ -172,12 +172,19 @@ function Register() {
             fullWidth
           />
           <Button
-            style={{fontSize:"18px", flexBasis: "10%",border:"none",backgroundColor:"transparent" }}
-            onClick={() =>
-              showPassword ? setShowPassword(false) : setShowPassword(true)
-            }
+            style={{
+              fontSize: "18px",
+              flexBasis: "10%",
+              border: "none",
+              backgroundColor: "transparent",
+            }}
+            onClick={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? <i className="fa-solid fa-eye"></i> : <i className="fa-solid fa-eye-slash"></i>}
+            {showPassword ? (
+              <i className="fa-solid fa-eye"></i>
+            ) : (
+              <i className="fa-solid fa-eye-slash"></i>
+            )}
           </Button>
         </div>
       
